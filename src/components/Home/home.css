@@ -1,0 +1,15 @@
+.main {
+  width: 80vw;
+  display: flex;
+  height: 90vh;
+}
+
+.left {
+  width: 35%;
+}
+.right {
+  width: 60%;
+
+  margin: auto;
+  height: 70vh;
+}
