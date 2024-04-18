@@ -37,7 +37,7 @@ const Sectionform = ({ projectId }) => {
     };
 
     const handleinput = (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setinput(e.target.value)
     }
 
@@ -86,7 +86,6 @@ const Sectionform = ({ projectId }) => {
                         }
                         arrow={mergedArrow}
                         trigger="click"
-
                     >
                         <Button onClick={handleButtonClick}>Add Section</Button>
                     </Popover>

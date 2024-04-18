@@ -14,11 +14,13 @@ const taskSlice = createSlice({
             return {
                 ...state.tasks,
                 tasks: action.payload
-
             }
         },
         Delete_Task_Success: (state, action) => {
-            state.tasks = state.tasks.filter((task) => task.id !== action.payload)
+            return {
+                ...state,
+                tasks: state.tasks.filter((task) => task.id !== action.payload)
+            }
         },
         Create_Task_Success: (state, action) => {
             return{

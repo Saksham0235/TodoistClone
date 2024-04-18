@@ -19,8 +19,11 @@ const SectionSlice=createSlice({
                 sections:[...state.sections,action.payload]
             }
         },
-        Delete_Section_Success(state,action){
-            state.sections = state.sections.filter((task) => task.id !== action.payload)
+        Delete_Section_Success:(state,action)=>{
+            return {
+                ...state,
+                sections:state.sections.filter((section)=>section.id!==action.payload)
+            }
         }
     }
 })
