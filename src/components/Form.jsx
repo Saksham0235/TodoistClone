@@ -1,58 +1,69 @@
-import React, { useState } from 'react';
-import { Button, Popover } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import {useDispatch} from 'react-redux'
-import {Create_Task_Success}  from  '../Store/Features/TodosSlice'
-import {createTask} from '../Api/Api'
-const Form = ({projectid,sectionid}) => {
-
+import React, { useMemo, useState } from 'react';
+import { Button, ConfigProvider, Popover } from 'antd';
+import {PlusOutlined } from '@ant-design/icons'
+const text = <span>Title</span>;
+const buttonWidth = 80;
+const content = (
+  <div>
+    <p>Content</p>
+    <p>Content</p>
+  </div>
+);
+const Form = ({ title,handleAdd }) => {
+  const [arrow, setArrow] = useState('Show');
   const [open, setOpen] = useState(false);
-  const [input,setinput]=useState('')
-  const hide = () => {
-    setOpen(false);
-  };
-  const handleOpenChange = (newOpen) => {
-    setOpen(newOpen);
-  };
-  const dispatch=useDispatch()
+  const mergedArrow = useMemo(() => {
+    if (arrow === 'Hide') {
+      return false;
+    }
+    if (arrow === 'Show') {
+      return true;
+    }
+    return {
+      pointAtCenter: true,
+    };
+  }, [arrow]);
 
-  const handleinput=(e)=>{
-    console.log(e.target.value);
-    setinput(e.target.value)
-  }
-  const AddTask=async(e)=>{
-    console.log('Clicked');
+  const [input, setinput] = useState('')
+
+  const handlesubmit = (e) => {
     e.preventDefault()
-    try{
-      const response=await createTask({
-        content:input,
-        projectId:projectid,
-      })
-      dispatch(Create_Task_Success(response))
-      setinput('')
-      console.log(input);
-      hide()
-    }
-    catch(err)
-    {
-      console.log("Error creating task",err);
-    }
+    handleAdd(input)
+    setinput('')
+    setOpen(false)
   }
   return (
-    <Popover
-      content={
-        <form onSubmit={AddTask}>
-          <input type='text' value={input} onChange={handleinput} />
-          <Button htmlType='submit' onClick={hide}>Add</Button>
-        </form>
-      }
-      title="Title"
-      trigger="click"
-      open={open}
-      onOpenChange={handleOpenChange}
+    <ConfigProvider
+      button={{
+        style: {
+          width: 100,
+          margin: 4,
+        },
+      }}
+    >
+
+      <div
+        style={{
+          clear: 'both',
+          whiteSpace: 'nowrap',
+        }}
       >
-      <Button style={{width:150,height:50}} ><PlusOutlined />Add Task</Button>
-    </Popover>
+        <Popover placement="bottomLeft" title={text} content={(
+          <div>
+            <form onSubmit={handlesubmit}>
+              <label htmlFor="name">Name:</label>
+              <input type="text" id="name" name="name" value={input} onChange={(e) => {setinput(e.target.value);console.log(e.target.value);}} />
+              <button type="submit">ADD</button>
+            </form>
+          </div>
+        )} arrow={mergedArrow} open={open}
+          onOpenChange={(open) => setOpen(open)} trigger="click">
+          <Button onClick={() => setOpen(!open)} style={{width:150}}><PlusOutlined  style={{marginLeft:"-10px"}}/>{title}</Button>
+        </Popover>
+
+      </div>
+
+    </ConfigProvider >
   );
 };
 export default Form;

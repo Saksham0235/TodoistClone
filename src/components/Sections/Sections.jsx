@@ -6,6 +6,8 @@ import Form from '../Form'
 import Sectionform from './Sectionform'
 import SectionTasks from './SectionTasks'
 import { Button } from 'antd'
+import { createSection } from '../../Api/Api'
+import {Add_Section_Success}from '../../Store/Features/SectionSlice'
 
 
 
@@ -25,7 +27,7 @@ function Sections({ projectId, tasks }) {
     }
     useEffect(() => {
         fetchsections(projectId)
-    }, [projectId])
+    }, [projectId,dispatch])
 
     const data = useSelector((state) => state.Section.sections)
     //  console.log(data, "From sections");
@@ -36,16 +38,23 @@ function Sections({ projectId, tasks }) {
         dispatch(Delete_Section_Success(response))
     }
 
+    const AddSection = async (input) => {
+        const response = await createSection(input,projectId)
+        dispatch(Add_Section_Success(response))
+    }
+
+
 
     return (
         <div>
             {data.map((item) => (
                 <div key={item.id} style={{ width: '30vw', height: 'auto', margin: '20px', border: '1px solid lightgrey', borderRadius: '10px', padding: '10px' }}>
-                    <li key={item.id} style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-between' }}>{item.name} <Button onClick={() => Delete(item.id)}>Delete</Button><Form sectionid={item.id} /></li>
+                    <li key={item.id} style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-between' }}>{item.name} <Button onClick={() => Delete(item.id)}>Delete</Button> <Form  title={'Add Task'} /></li>
+                    
                     <SectionTasks sectionid={item.id} projectId={projectId} tasks={tasks} />
                 </div>
             ))}
-            <Sectionform projectId={projectId} />
+            <Form title={'Add Section'} handleAdd={AddSection}   />
 
         </div>
     )

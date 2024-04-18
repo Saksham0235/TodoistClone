@@ -17,5 +17,5 @@ const ProjectSlice=createSlice({
     }
 })
 
-export const {Fetch_Project_Success} =ProjectSlice.actions
+export const {Fetch_Project_Success,Create_Project} =ProjectSlice.actions
 export default ProjectSlice.reducer

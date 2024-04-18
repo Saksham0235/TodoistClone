@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { getProjects } from '../../Api/Api';
-import { Fetch_Project_Success } from '../../Store/Features/ProjectSlice'
+import { getProjects,createProject } from '../../Api/Api';
+import { Fetch_Project_Success,Create_Project } from '../../Store/Features/ProjectSlice'
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Drawer, Space, Typography, Menu } from 'antd';
-import { PlusSquareOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 import { Link } from 'react-router-dom';
+import Form from '../Form';
 
 
 
@@ -43,6 +43,19 @@ function Projects() {
     const handleProjectid = (id) => {
         setprojectid(id)
     }
+    const handleFormClick = (e) => {
+        e.stopPropagation();
+    };
+
+    const AddProject=async(name)=>{
+        try{
+            const response =await createProject(name)
+            dispatch(Create_Project(response ))
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
     
    
     return (
@@ -73,13 +86,13 @@ function Projects() {
                     <Menu
             onClick={onClick}
             style={{
-                width: 300
+                width: 350
             }}
             defaultOpenKeys={['sub1']}
             selectedKeys={[current]}
             mode="inline"
         >
-            <Menu.SubMenu key="sub1" title={<Title level={2}>My Projects  <PlusSquareOutlined style={{ fontSize: '20px', marginLeft: 10 }} /> </Title>}>
+            <Menu.SubMenu key="sub1" title={<Title level={4} style={{display:'flex',height:50}}>My Projects <Form title={""} handleAdd={AddProject} onClick={handleFormClick} />   </Title>}>
                 {
                     projects.map((data) => {
                         return (

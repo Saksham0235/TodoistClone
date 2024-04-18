@@ -9,7 +9,8 @@ export const getProjects = async () => {
 };
 
 export const createProject = async (name) => {
-  const response = api.addProject({ name: name });
+  const response = api.addProject(name);
+  console.log(response,"From Projectapi");
   return response;
 };
 
@@ -23,38 +24,38 @@ export const deleteTask = async (taskid) => {
   return response;
 };
 
-export const createTask = async (content, projectId) => {
-  const response =await api.addTask({
-    content: `${content}`,
-    projectId: `${projectId}`,
-  });
+export const createTask = async (content, projectId, date) => {
+  let response;
+  if (projectId) {
+    response = await api.addTask({
+      content: `${content}`,
+      projectId: `${projectId}`,
+    });
+  } else {
+    response = await api.addTask({
+      content: `${content}`,
+      date: `${date}`,
+    });
+  }
 
   return response;
 };
-
-
-
-
-
 
 export const getsections = async (projectId) => {
- 
-  const response = await api.getSections(projectId)
+  const response = await api.getSections(projectId);
   return response;
 };
 
-export const createSection = async ({ projectid, name }) => {
-  const api = new TodoistApi(token);
-  const response =await api.addSection({
+export const createSection = async (name, projectid) => {
+  const response = await api.addSection({
     name: `${name}`,
     projectId: `${projectid}`,
   });
   return response;
 };
 
-
-export const DeleteSection=async(id)=>{
+export const DeleteSection = async (id) => {
   const api = new TodoistApi(token);
-  const response=await api.deleteSection(id)
+  const response = await api.deleteSection(id);
   return response;
-}
+};
