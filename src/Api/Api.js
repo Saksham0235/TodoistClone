@@ -9,9 +9,19 @@ export const getProjects = async () => {
 };
 
 export const createProject = async (name) => {
-  const response = api.addProject(name);
-  console.log(response,"From Projectapi");
+  const response = await api.addProject({ name: `${name}` });
+  console.log(response, "From Projectapi");
   return response;
+};
+
+export const DeleteProject = async (Projectid) => {
+  try {
+    const response = api.deleteProject(Projectid);
+    console.log("From Projectapi", response);
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getTasks = async () => {
@@ -26,23 +36,47 @@ export const deleteTask = async (taskid) => {
 
 export const createTask = async (content, projectId, date) => {
   let response;
-  if (projectId) {
+  if (projectId ) {
     response = await api.addTask({
       content: `${content}`,
       projectId: `${projectId}`,
+      date: `${date}`,
     });
-  } else {
+  } else  {
     response = await api.addTask({
       content: `${content}`,
       date: `${date}`,
     });
   }
-
   return response;
 };
 
-export const getsections = async (projectId) => {
-  const response = await api.getSections(projectId);
+export const createSectionTask = async (content, projectId, date, sectionid) => {
+  let response;
+  if (projectId && !sectionid ) {
+    response = await api.addTask({
+      content: `${content}`,
+      projectId: `${projectId}`,
+      sectionId: null,
+      date: `${date}`,
+    });
+  } else if (projectId && sectionid) {
+    response = await api.addTask({
+      content: `${content}`,
+      sectionId: `${sectionid}`,
+      date: `${date}`,
+    });
+  } else if(!projectId && !sectionid) {
+    response = await api.addTask({
+      content: `${content}`,
+      date: `${date}`,
+    });
+  }
+  return response;
+}
+
+export const getsections = async (id) => {
+  const response = await api.getSections(id);
   return response;
 };
 

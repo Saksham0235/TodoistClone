@@ -10,7 +10,7 @@ function SectionTasks({sectionid,projectId,tasks}) {
     const dispatch=useDispatch()
     const Delete = async (id) => {
         const response = await deleteTask(id);
-        dispatch(Delete_Task_Success(response))
+        dispatch(Delete_Task_Success(id))
     }
 
 

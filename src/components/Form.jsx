@@ -58,7 +58,7 @@ const Form = ({ title,handleAdd }) => {
           </div>
         )} arrow={mergedArrow} open={open}
           onOpenChange={(open) => setOpen(open)} trigger="click">
-          <Button onClick={() => setOpen(!open)} style={{width:150}}><PlusOutlined  style={{marginLeft:"-10px"}}/>{title}</Button>
+          <Button onClick={() => setOpen(!open)} style={{width:'auto',marginLeft:"40px"}}><PlusOutlined />{title}</Button>
         </Popover>
 
       </div>

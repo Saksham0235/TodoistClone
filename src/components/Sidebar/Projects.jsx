@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { getProjects,createProject } from '../../Api/Api';
-import { Fetch_Project_Success,Create_Project } from '../../Store/Features/ProjectSlice'
+import { getProjects, createProject, DeleteProject } from '../../Api/Api';
+import { Fetch_Project_Success, Create_Project, Delete_Project_Success } from '../../Store/Features/ProjectSlice'
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Drawer, Space, Typography, Menu } from 'antd';
 const { Title } = Typography;
@@ -25,8 +25,13 @@ function Projects() {
     };
 
     const fetchprojects = async () => {
-        const response = await getProjects();
-        dispatch(Fetch_Project_Success(response))
+        try{
+            const response = await getProjects();
+            dispatch(Fetch_Project_Success(response))
+        }
+        catch(error){
+            console.log(error)
+        }
     }
 
     const showDrawer = () => {
@@ -38,7 +43,7 @@ function Projects() {
     const onClose = () => {
         setOpen(false);
     };
-    useEffect(() => { fetchprojects() }, [])
+    
 
     const handleProjectid = (id) => {
         setprojectid(id)
@@ -47,17 +52,29 @@ function Projects() {
         e.stopPropagation();
     };
 
-    const AddProject=async(name)=>{
+    const AddProject = async (name) => {
+        try {
+            const response = await createProject(name)
+            dispatch(Create_Project(response))
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+    const Delete = async (id) => {
         try{
-            const response =await createProject(name)
-            dispatch(Create_Project(response ))
+            const response = await DeleteProject(id)
+            console.log(response,"From DeleteFunction");
+            dispatch(Delete_Project_Success(id))
         }
         catch(error){
             console.log(error)
         }
     }
-    
-   
+    useEffect(() => { fetchprojects() }, [projectid])
+
+
     return (
         <div>
             <div className="left">
@@ -83,31 +100,33 @@ function Projects() {
                     {/* <Form /> */}
                     <hr />
                     <div className="bottom">
-                    <Menu
-            onClick={onClick}
-            style={{
-                width: 350
-            }}
-            defaultOpenKeys={['sub1']}
-            selectedKeys={[current]}
-            mode="inline"
-        >
-            <Menu.SubMenu key="sub1" title={<Title level={4} style={{display:'flex',height:50}}>My Projects <Form title={""} handleAdd={AddProject} onClick={handleFormClick} />   </Title>}>
-                {
-                    projects.map((data) => {
-                        return (
-                            <Menu.Item key={data.id} style={{ fontSize: '20px' }} onClick={() => handleProjectid(data.id)}>
+                        <Menu
+                            onClick={onClick}
+                            style={{
+                                width: 350
+                            }}
+                            defaultOpenKeys={['sub1']}
+                            selectedKeys={[current]}
+                            mode="inline"
+                        >
+                            <Menu.SubMenu key="sub1" title={<div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}><Title level={4} style={{marginBottom:'30px'}}>My Projects</Title><Form title={""} handleAdd={AddProject} onClick={handleFormClick} /></div>}>
+                                {
+                                    projects.map((data) => {
+                                        return (
+                                            <Menu.Item key={data.id} style={{ fontSize: '20px', display: 'flex', justifyContent: 'space-between' }} onClick={() => handleProjectid(data.id)}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+                                                <Link to={`/projects/${data.id}`}>
+                                                    {data.name}
+                                                </Link>
+                                                <Button onClick={() => Delete(data.id)} >Delete</Button>
+                                                </div>
 
-                                <Link to={`/projects/${data.id}`}>
-                                    {data.name}
-                                </Link>
-
-                            </Menu.Item>
-                        )
-                    })
-                }
-            </Menu.SubMenu>
-        </Menu>
+                                            </Menu.Item>
+                                        )
+                                    })
+                                }
+                            </Menu.SubMenu>
+                        </Menu>
 
                     </div>
                 </Drawer>
