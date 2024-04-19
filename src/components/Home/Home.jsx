@@ -22,7 +22,7 @@ const Home = () => {
             <Projects />
             </div>
             <div className="right">
-                <Title level={2}>Today</Title>
+               
                
                 <Routes>
                     <Route path='/' element={<Tasks/>} />

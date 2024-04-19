@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getsections, DeleteSection } from '../../Api/Api'
 import { Fetch_Section_Success, Delete_Section_Success } from '../../Store/Features/SectionSlice'
@@ -16,7 +16,7 @@ import { Spin } from 'antd';
 function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtask }) {
     const [currentProjectId, setCurrentProjectId] = useState(projectId);
     const [selectedId, setSelectedId] = useState(selectedSectionId);
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     const handleSectionClick = (sectionId) => {
         if (onSectionSelect) {
@@ -41,7 +41,7 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
     }
     useEffect(() => {
         fetchsections()
-        
+
     }, [projectId])
     useEffect(() => {
         console.log("New project ID:", projectId);
@@ -69,8 +69,8 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
         <div>
             <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
             {data.map((item) => (
-                <div key={item.id} style={{ width: '30vw', height: 'auto', margin: '20px', border: '1px solid lightgrey', borderRadius: '10px', padding: '10px' }}>
-                    <li key={item.id} style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-between' }} onClick={() => handleSectionClick(item.id)}>{item.name} <Button onClick={() => Delete(item.id)}>Delete</Button></li>
+                <div key={item.id} style={{ width: '30vw', height: 'auto', margin: '20px', border: '1px solid lightgrey', borderRadius: '10px', padding: '10px' }} onClick={() => { handleSectionClick(item.id); console.log('Selectedsectionid', item.id); }}>
+                    <li key={item.id} style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-between' }} >{item.name} <Button onClick={() => Delete(item.id)}>Delete</Button></li>
 
                     <SectionTasks sectionid={item.id} projectId={projectId} tasks={tasks} />
                     <Form title={'Add Task'} handleAdd={Addtask} />
