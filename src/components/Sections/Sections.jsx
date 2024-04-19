@@ -7,6 +7,8 @@ import SectionTasks from './SectionTasks'
 import { Button } from 'antd'
 import { createSection } from '../../Api/Api'
 import { Add_Section_Success } from '../../Store/Features/SectionSlice'
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 
 
@@ -14,6 +16,7 @@ import { Add_Section_Success } from '../../Store/Features/SectionSlice'
 function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtask }) {
     const [currentProjectId, setCurrentProjectId] = useState(projectId);
     const [selectedId, setSelectedId] = useState(selectedSectionId);
+    const [loading, setLoading] = useState(true); 
 
     const handleSectionClick = (sectionId) => {
         if (onSectionSelect) {
@@ -30,6 +33,7 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
         try {
             const response = await getsections(projectId)
             dispatch(Fetch_Section_Success(response))
+            setLoading(false)
         }
         catch (err) {
             console.log('Error in fetching sections', err);
@@ -37,6 +41,7 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
     }
     useEffect(() => {
         fetchsections()
+        
     }, [projectId])
     useEffect(() => {
         console.log("New project ID:", projectId);
@@ -62,11 +67,13 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
 
     return (
         <div>
+            <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
             {data.map((item) => (
                 <div key={item.id} style={{ width: '30vw', height: 'auto', margin: '20px', border: '1px solid lightgrey', borderRadius: '10px', padding: '10px' }}>
-                    <li key={item.id} style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-between' }} onClick={() => handleSectionClick(item.id)}>{item.name} <Button onClick={() => Delete(item.id)}>Delete</Button> <Form title={'Add Task'} handleAdd={Addtask} /></li>
+                    <li key={item.id} style={{ listStyle: 'none', display: 'flex', justifyContent: 'space-between' }} onClick={() => handleSectionClick(item.id)}>{item.name} <Button onClick={() => Delete(item.id)}>Delete</Button></li>
 
                     <SectionTasks sectionid={item.id} projectId={projectId} tasks={tasks} />
+                    <Form title={'Add Task'} handleAdd={Addtask} />
                 </div>
             ))}
             <Form title={'Add Section'} handleAdd={AddSection} />
