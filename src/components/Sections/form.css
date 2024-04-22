@@ -1,0 +1,17 @@
+.btndiv{
+    opacity:0.1
+}
+.btndiv:hover{
+    opacity: 1;
+ 
+}
+
+
+.btn{
+    color:red;
+    background: none;
+    font-weight:600;
+    font-size: 15px;
+    cursor: pointer;
+        border: none;
+}   

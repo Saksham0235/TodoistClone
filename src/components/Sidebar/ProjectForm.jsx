@@ -13,8 +13,7 @@ const content = (
 const Form = ({ title, handleAdd }) => {
   const [arrow, setArrow] = useState('Show');
   const [open, setOpen] = useState(false);
-  const [selecteddate,setselecteddate]=useState(null)
-  const[selectedstring,setselectedstring]=useState('')
+
   const mergedArrow = useMemo(() => {
     if (arrow === 'Hide') {
       return false;
@@ -31,25 +30,13 @@ const Form = ({ title, handleAdd }) => {
 
   const handlesubmit = (e) => {
     e.preventDefault()
-    if (!input || !selecteddate) {
-      return; 
-    }
+
     handleAdd(input,selecteddate,selectedstring)
     setinput('')
     setOpen(false)
-    setselecteddate(null)
-    setselectedstring('')
-  }
-  const onChange = (date,dateString) => {
-   
-    const str = String(date?.$d)
-    const string = str.slice(4, 10)
 
-    setselecteddate(dateString,string)
-    setselectedstring(string)
-    console.log(date, "Date");
-    console.log("String ",string);
-  };
+  }
+
   return (
     <ConfigProvider
       button={{
@@ -68,11 +55,8 @@ const Form = ({ title, handleAdd }) => {
       >
         <Popover placement="bottomLeft" title={text} content={(
           <div>
-            <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', height: '8rem', justifyContent: 'space-between', width: '15rem' }}>
+            <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', height: '6rem', justifyContent: 'space-between', width: '15rem' }}>
               <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', height: '2rem', justifyContent: 'space-between', width: '15rem', border: 'none' }} />
-              <Space direction="vertical">
-                <DatePicker onChange={onChange} />
-              </Space>
               <div className="buttons">
                 <Button onClick={handlesubmit} style={{ width: '5rem' }}>ADD</Button>
                 <Button onClick={() => setOpen(!open)}>Cancel</Button>

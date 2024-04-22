@@ -5,15 +5,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Drawer, Space, Typography, Menu } from 'antd';
 const { Title } = Typography;
 import { Link } from 'react-router-dom';
-import Form from '../Form';
+import ProjectForm from './ProjectForm'
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
-
+import {  useSnackbar } from 'notistack';
 
 
 
 
 function Projects() {
+
+    const { enqueueSnackbar } = useSnackbar();
+
     const [projectid, setprojectid] = useState('')
     const [open, setOpen] = useState(true);
     const [loading, setLoading] = useState(true);
@@ -32,18 +35,20 @@ function Projects() {
             const response = await getProjects();
             dispatch(Fetch_Project_Success(response))
             setLoading(false)
+            // enqueueSnackbar("Fetched Projects",{variant:'success'})
         }
         catch (error) {
             console.log(error)
+            enqueueSnackbar("Failed in fetching Projects",error,{variant:'error'})
         }
     }
 
     const showDrawer = () => {
         setOpen(true);
     };
-    const onChange = (e) => {
-        setPlacement(e.target.value);
-    };
+    // const onChange = (e) => {
+    //     setPlacement(e.target.value);
+    // };
     const onClose = () => {
         setOpen(false);
     };
@@ -60,9 +65,11 @@ function Projects() {
         try {
             const response = await createProject(name)
             dispatch(Create_Project(response))
+            enqueueSnackbar("Added task",{variant:'success'})
         }
         catch (error) {
             console.log(error)
+            enqueueSnackbar("Failed in adding PRoject",error,{variant:'error'})
         }
     }
 
@@ -101,9 +108,9 @@ function Projects() {
                         </Space>
                     }
                 >
-                    {/* <Form /> */}
+                    
                     <hr />
-                   
+
 
                     <div className="bottom">
                         <Menu
@@ -115,12 +122,12 @@ function Projects() {
                             selectedKeys={[current]}
                             mode="inline"
                         >
-                            <Menu.SubMenu key="sub1" title={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Title level={4} style={{ marginBottom: '30px' }}>My Projects</Title><Form title={""} handleAdd={AddProject} onClick={handleFormClick} /></div>}>
-                           <center> <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24,margin:'auto' }} spin />} /></center>
+                            <Menu.SubMenu key="sub1" title={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><Title level={4} style={{ marginBottom: '30px' }}>My Projects</Title><ProjectForm title={""} handleAdd={AddProject} onClick={handleFormClick} /></div>}>
+                                <center> <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24, margin: 'auto' }} spin />} /></center>
                                 {
                                     projects.map((data) => {
                                         return (
-                                            <Menu.Item eventKey={data.id} style={{ fontSize: '20px', display: 'flex', justifyContent: 'space-between' }} onClick={() => handleProjectid(data.id)}>
+                                            <Menu.Item warnkey={data.id} style={{ fontSize: '20px', display: 'flex', justifyContent: 'space-between' }} onClick={() => handleProjectid(data.id)}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                     <Link to={`/projects/${data.id}`}>
                                                         {data.name}
@@ -129,7 +136,7 @@ function Projects() {
                                                 </div>
 
                                             </Menu.Item>
-                                        )   
+                                        )
                                     })
                                 }
                             </Menu.SubMenu>

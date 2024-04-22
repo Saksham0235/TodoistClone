@@ -34,46 +34,82 @@ export const deleteTask = async (taskid) => {
   return response;
 };
 
-export const createTask = async (content, projectId, date) => {
-  let response;
-  if (projectId ) {
+
+// export const createTask = async (content, projectId, date,dueString,todaydate
+// ) => {
+//   let response;
+//   let api = new TodoistApi(token);
+//   if (projectId) {
+//     response = await api.addTask({
+//       content: `${content}`,
+//       projectId: `${projectId}`,
+//       due_date: `${date}`,
+//       due_string: `${dueString}`,
+//     });
+//   } else {
+//     response = await api.addTask({
+//       content: `${content}`,
+//       due_date: `${todaydate}`,
+//       due_string: `${'Today'}`,
+//     });
+//   }
+//   return response;
+// };
+
+export const createTask = async (
+  content, projectId, date,dueString,todaydate
+) => {
+  const api = new TodoistApi(token)
+  console.log(`${content} pid: ${projectId} date : ${date}  string: ${dueString}`,"From api");
+  let response
+  if (projectId) {
     response = await api.addTask({
       content: `${content}`,
       projectId: `${projectId}`,
-      date: `${date}`,
-    });
-  } else  {
+      due_date: `${date}`,
+      due_string: `${dueString}`
+    })
+  } else {
     response = await api.addTask({
       content: `${content}`,
-      date: `${date}`,
-    });
+      due_date: `${todaydate}`,
+      due_string: `${`Today`}`
+    })
   }
-  return response;
-};
+  return response
+}
 
-export const createSectionTask = async (content, projectId, date, sectionid) => {
+export const createSectionTask = async (
+  content,
+  projectId,
+  date,
+  sectionid,
+  string
+) => {
   let response;
-  if (projectId && !sectionid ) {
+  if (projectId && !sectionid) {
     response = await api.addTask({
       content: `${content}`,
       projectId: `${projectId}`,
       sectionId: null,
-      date: `${date}`,
+      due_date: `${date}`,
+      due_string: `${string}`,
     });
   } else if (projectId && sectionid) {
     response = await api.addTask({
       content: `${content}`,
       sectionId: `${sectionid}`,
-      date: `${date}`,
+      due_date: `${date}`,
+      due_string: `${string}`,
     });
-  } else if(!projectId && !sectionid) {
+  } else if (!projectId && !sectionid) {
     response = await api.addTask({
       content: `${content}`,
-      date: `${date}`,
+      due_date: `${date}`,
     });
   }
   return response;
-}
+};
 
 export const getsections = async (id) => {
   const response = await api.getSections(id);
