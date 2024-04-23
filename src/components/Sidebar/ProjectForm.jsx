@@ -27,11 +27,12 @@ const Form = ({ title, handleAdd }) => {
   }, [arrow]);
 
   const [input, setinput] = useState('')
+  
 
   const handlesubmit = (e) => {
     e.preventDefault()
 
-    handleAdd(input,selecteddate,selectedstring)
+    handleAdd(input )
     setinput('')
     setOpen(false)
 

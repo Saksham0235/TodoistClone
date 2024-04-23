@@ -1,54 +1,61 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, ConfigProvider, Popover, DatePicker, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'
 const text = <span>Title</span>;
-const buttonWidth = 80;
-const content = (
-  <div>
-    <p>Content</p>
-    <p>Content</p>
-  </div>
-);
-const Form = ({ title, handleAdd }) => {
-  const [arrow, setArrow] = useState('Show');
-  const [open, setOpen] = useState(false);
-  const [selecteddate,setselecteddate]=useState(null)
-  const[selectedstring,setselectedstring]=useState('')
-  const mergedArrow = useMemo(() => {
-    if (arrow === 'Hide') {
-      return false;
-    }
-    if (arrow === 'Show') {
-      return true;
-    }
-    return {
-      pointAtCenter: true,
-    };
-  }, [arrow]);
 
+
+const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate }) => {
+  console.log(editmode,"From fomrjs");
+  console.log();
+  const [open, setOpen] = useState(isformopen);
+  const [selecteddate, setselecteddate] = useState(null)
+  const [selectedstring, setselectedstring] = useState('')
   const [input, setinput] = useState('')
+
+
+  useEffect(() => {
+    setOpen(isformopen);
+  }, [isformopen]);
+
+
+
+  useEffect(() => {
+    if (editmode) {
+      setinput(editmode.content)
+    }
+    else {
+      setinput('')
+      setselecteddate(null);
+      setselectedstring('');
+    }
+  }, [editmode]);
+
 
   const handlesubmit = (e) => {
     e.preventDefault()
-    if (!input || !selecteddate) {
-      return; 
+
+    if (editmode) {
+      handleupdate(input, selecteddate, selectedstring)
     }
-    handleAdd(input,selecteddate,selectedstring)
+    else {
+      handleAdd(input, selecteddate, selectedstring);
+    }
+
     setinput('')
-    setOpen(false)
     setselecteddate(null)
     setselectedstring('')
+    setOpen(false)
   }
-  const onChange = (date,dateString) => {
-   
+  const onChange = (date, dateString) => {
+
     const str = String(date?.$d)
     const string = str.slice(4, 10)
 
-    setselecteddate(dateString,string)
+    setselecteddate(dateString, string)
     setselectedstring(string)
     console.log(date, "Date");
-    console.log("String ",string);
+    console.log("String ", string);
   };
   return (
     <ConfigProvider
@@ -75,13 +82,13 @@ const Form = ({ title, handleAdd }) => {
               </Space>
               <div className="buttons">
                 <Button onClick={handlesubmit} style={{ width: '5rem' }}>ADD</Button>
-                <Button onClick={() => setOpen(!open)}>Cancel</Button>
+                <Button onClick={()=> toggleform()}>Cancel</Button>
               </div>
             </form>
           </div>
-        )} arrow={mergedArrow} open={open}
+        )} open={open}
           onOpenChange={(open) => setOpen(open)} trigger="click">
-          <Button onClick={() => setOpen(!open)} style={{ width: 'auto', marginLeft: "28px",display:'flex' }}><PlusOutlined />{title}</Button>
+          <Button onClick={() => toggleform()} style={{ width: 'auto', marginLeft: "28px", display: 'flex' }}><PlusOutlined />{title}</Button>
         </Popover>
 
       </div>

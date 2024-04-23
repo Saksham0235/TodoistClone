@@ -4,12 +4,12 @@ import { Fetch_Project_Success, Create_Project, Delete_Project_Success } from '.
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Drawer, Space, Typography, Menu } from 'antd';
 const { Title } = Typography;
-import { Link } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 import ProjectForm from './ProjectForm'
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
-import {  useSnackbar } from 'notistack';
-
+import { useSnackbar } from 'notistack';
+import './project.css'
 
 
 
@@ -20,6 +20,7 @@ function Projects() {
     const [projectid, setprojectid] = useState('')
     const [open, setOpen] = useState(true);
     const [loading, setLoading] = useState(true);
+    const [selectedProject, setSelectedProject] = useState(null);
     const task = useSelector(state => state.todos.tasks)
     const projects = useSelector(state => state.projects.Projects)
     const [placement, setPlacement] = useState('left');
@@ -29,26 +30,23 @@ function Projects() {
         console.log('click ', e);
         setCurrent(e.key);
     };
-
+    const navigate =useNavigate();
     const fetchprojects = async () => {
         try {
             const response = await getProjects();
             dispatch(Fetch_Project_Success(response))
             setLoading(false)
-            // enqueueSnackbar("Fetched Projects",{variant:'success'})
         }
         catch (error) {
             console.log(error)
-            enqueueSnackbar("Failed in fetching Projects",error,{variant:'error'})
+            enqueueSnackbar("Failed in fetching Projects", error, { variant: 'error' })
         }
     }
 
     const showDrawer = () => {
         setOpen(true);
     };
-    // const onChange = (e) => {
-    //     setPlacement(e.target.value);
-    // };
+
     const onClose = () => {
         setOpen(false);
     };
@@ -65,11 +63,10 @@ function Projects() {
         try {
             const response = await createProject(name)
             dispatch(Create_Project(response))
-            enqueueSnackbar("Added task",{variant:'success'})
         }
         catch (error) {
             console.log(error)
-            enqueueSnackbar("Failed in adding PRoject",error,{variant:'error'})
+            enqueueSnackbar("Failed in adding PRoject", error, { variant: 'error' })
         }
     }
 
@@ -84,6 +81,12 @@ function Projects() {
         }
     }
     useEffect(() => { fetchprojects() }, [projectid])
+
+    const HomePage=()=>{
+        navigate('/')
+        setprojectid(null)
+        setSelectedProject('')
+    }
 
 
     return (
@@ -108,7 +111,7 @@ function Projects() {
                         </Space>
                     }
                 >
-                    
+                    <Button onClick={HomePage}>Home</Button>
                     <hr />
 
 
@@ -129,7 +132,7 @@ function Projects() {
                                         return (
                                             <Menu.Item warnkey={data.id} style={{ fontSize: '20px', display: 'flex', justifyContent: 'space-between' }} onClick={() => handleProjectid(data.id)}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                    <Link to={`/projects/${data.id}`}>
+                                                    <Link to={`/projects/${data.id}-${data.name}`} className={selectedProject === data.id ? 'selected' : ''}>
                                                         {data.name}
                                                     </Link>
                                                     <Button onClick={() => Delete(data.id)} >Delete</Button>

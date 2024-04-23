@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Typography, Popover } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask, getTasks, createTask, createSectionTask } from '../Api/Api'
-import { Delete_Task_Success, Fetch_tasks_Success, Create_Task_Success } from '../Store/Features/TodosSlice'
+import { deleteTask, getTasks, createTask, createSectionTask, updateTask } from '../Api/Api'
+import { Delete_Task_Success, Fetch_tasks_Success, Create_Task_Success, Update_Task_Success } from '../Store/Features/TodosSlice'
 import { useParams } from 'react-router-dom'
 import Sections from './Sections/Sections';
-import { LoadingOutlined, CalendarOutlined } from '@ant-design/icons';
+import { LoadingOutlined, CalendarOutlined, EditOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import Form from './Form';
 const { Title } = Typography;
@@ -16,14 +16,23 @@ function Tasks() {
 
     const { enqueueSnackbar } = useSnackbar();
 
-
-
-    const { projectId } = useParams()
+    const params = useParams()
+    const prop=params.projectId
     
+
+    let [projectId, projectName] = prop ? prop.split('-') : ''
+
+
     const dispatch = useDispatch()
     const [projectid, setprojectid] = useState(projectId)
-
+    const [editdata, seteditdata] = useState(null)
     const [loading, setLoading] = useState(true);
+    const [isformopen, setisformopen] = useState(false)
+
+    const toggleform = () => {
+        console.log(isformopen, "State of form");
+        setisformopen(!isformopen)
+    }
     const Delete = async (id) => {
         const response = await deleteTask(id);
         dispatch(Delete_Task_Success(id))
@@ -34,6 +43,7 @@ function Tasks() {
         setSelectedSectionId(sectionId);
     };
     const task = useSelector(state => state.todos.tasks)
+    const projects = useSelector(state => state.projects.Projects)
     useEffect(() => {
         const fetchtask = async () => {
             try {
@@ -48,16 +58,15 @@ function Tasks() {
         }
         fetchtask()
     }, [])
+
     useEffect(() => {
         setprojectid(projectId)
+
     }, [projectId])
- 
+
     const Addtask = async (name, date, string) => {
-        // console.log(date,"date");
-        // console.log("String",string);
         try {
             const response = await createTask(name, projectId, date, string, todaydate)
-            console.log(response, "ADDTASK Function");
             dispatch(Create_Task_Success(response))
         }
         catch (error) {
@@ -74,6 +83,34 @@ function Tasks() {
         }
     }
 
+    const handleedit = (taskid) => {
+        const dataset = task.filter(element => element.id === taskid)
+        const data = dataset[0]
+        console.log(data, 'From handleedit');
+        seteditdata(data)
+
+    }
+
+    const UpdateTask = async (content, date, string) => {
+        try {
+            const response = await updateTask(editdata?.id,
+                {
+                    content: content,
+                    due_date: date,
+                    due_string: string
+                })
+            console.log(response, "From updatefun");
+            dispatch(Update_Task_Success(response))
+            setisformopen(false)
+            seteditdata(null)
+        }
+        catch (error) {
+            console.log('Error updating task', error);
+        }
+
+    }
+
+
     const today = new Date()
     const year = today.getFullYear()
     const month = today.getMonth() + 1
@@ -89,11 +126,11 @@ function Tasks() {
     return (
         <>
             {
-                projectId ? <Title level={2}>My Projects/</Title> : <Title level={2}>Today</Title>
+                projectId ? <Title level={2}> {projectName}</Title> : <Title level={2}>Today</Title>
             }
 
 
-            <Form title={"Add Task"} handleAdd={Addtask} />
+            <Form title={"Add Task"} handleAdd={Addtask} editmode={editdata} UpdateTask={UpdateTask} isformopen={isformopen} toggleform={toggleform} handleupdate={UpdateTask} />
 
             <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
             {projectId ?
@@ -108,15 +145,20 @@ function Tasks() {
                                         <CalendarOutlined />{data.due?.string}
                                     </span>
                                 </div>
-                                <Popover
-                                    content={
-                                        <Button danger onClick={() => Delete(data.id)}>Delete</Button>
-                                    }
+                                <div className="buttons" style={{ width: 100, display: 'flex', justifyContent: 'space-between' }}>
+                                    <EditOutlined style={{ cursor: 'pointer' }} onClick={() => { handleedit(data.id); setisformopen(true) }} />
+                                    <Popover
+                                        content={
+                                            <Button danger onClick={() => Delete(data.id)}>Delete</Button>
+                                        }
 
-                                    trigger="click"
-                                >
-                                    <Button className='listbtn' >{'...'}</Button>
-                                </Popover>
+                                        trigger="click"
+                                    >
+                                        <Button className='listbtn' >{'...'}</Button>
+                                    </Popover>
+
+                                </div>
+
                             </li>
 
                         </ul>
@@ -142,7 +184,7 @@ function Tasks() {
                 ))
             }
             {
-                projectId && <Sections projectId={projectId} tasks={task} Addtask={AddSectiontask} onSectionSelect={handleSectionSelect} selectedSectionId={selectedSectionId} />
+                projectId && <Sections projectId={projectId} tasks={task} Addtask={AddSectiontask} onSectionSelect={handleSectionSelect} selectedSectionId={selectedSectionId} UpdateTask={UpdateTask} />
             }
 
         </>

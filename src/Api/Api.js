@@ -34,50 +34,35 @@ export const deleteTask = async (taskid) => {
   return response;
 };
 
-
-// export const createTask = async (content, projectId, date,dueString,todaydate
-// ) => {
-//   let response;
-//   let api = new TodoistApi(token);
-//   if (projectId) {
-//     response = await api.addTask({
-//       content: `${content}`,
-//       projectId: `${projectId}`,
-//       due_date: `${date}`,
-//       due_string: `${dueString}`,
-//     });
-//   } else {
-//     response = await api.addTask({
-//       content: `${content}`,
-//       due_date: `${todaydate}`,
-//       due_string: `${'Today'}`,
-//     });
-//   }
-//   return response;
-// };
-
 export const createTask = async (
-  content, projectId, date,dueString,todaydate
+  content,
+  projectId,
+  date,
+  dueString,
+  todaydate
 ) => {
-  const api = new TodoistApi(token)
-  console.log(`${content} pid: ${projectId} date : ${date}  string: ${dueString}`,"From api");
-  let response
+  const api = new TodoistApi(token);
+  console.log(
+    `${content} pid: ${projectId} date : ${date}  string: ${dueString}`,
+    "From api"
+  );
+  let response;
   if (projectId) {
     response = await api.addTask({
       content: `${content}`,
       projectId: `${projectId}`,
       due_date: `${date}`,
-      due_string: `${dueString}`
-    })
+      due_string: `${dueString}`,
+    });
   } else {
     response = await api.addTask({
       content: `${content}`,
       due_date: `${todaydate}`,
-      due_string: `${`Today`}`
-    })
+      due_string: `${`Today`}`,
+    });
   }
-  return response
-}
+  return response;
+};
 
 export const createSectionTask = async (
   content,
@@ -110,6 +95,16 @@ export const createSectionTask = async (
   }
   return response;
 };
+export const updateTask = async (taskid, data) => {
+  const { content, duedate, dueString } = data;
+  const response = await api.updateTask(taskid, {
+    content: content,
+    due_date: duedate,
+    due_string: dueString,
+  });
+  return response;
+};
+
 
 export const getsections = async (id) => {
   const response = await api.getSections(id);

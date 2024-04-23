@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getsections, DeleteSection } from '../../Api/Api'
 import { Fetch_Section_Success, Delete_Section_Success } from '../../Store/Features/SectionSlice'
-import Form from '../Form'
 import SectionTasks from './SectionTasks'
 import { Button } from 'antd'
-import { createSection } from '../../Api/Api'
+import { createSection, updateTask } from '../../Api/Api'
 import { Add_Section_Success } from '../../Store/Features/SectionSlice'
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Popover } from 'antd';
@@ -16,12 +15,13 @@ import SectionForm from './SectionForm'
 
 
 
-function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtask }) {
+function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtask}) {
+    
     const { enqueueSnackbar } = useSnackbar();
     const [currentProjectId, setCurrentProjectId] = useState(projectId);
     const [selectedId, setSelectedId] = useState(selectedSectionId);
     const [loading, setLoading] = useState(true);
-
+    
     const handleSectionClick = (sectionId) => {
         if (onSectionSelect) {
             setSelectedId(sectionId);
@@ -56,6 +56,7 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
 
 
 
+
     const Delete = async (id) => {
         const response = await DeleteSection(id);
         console.log("From Delete section :", response);
@@ -66,7 +67,7 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
         const response = await createSection(input, projectId)
         dispatch(Add_Section_Success(response))
     }
-
+  
 
 
     return (
@@ -81,7 +82,7 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
                         </div>
                         <Popover
                             content={
-                                <Button danger onClick={() => { Delete(item.id)}}>Delete</Button>
+                                <Button danger onClick={() => { Delete(item.id) }}>Delete</Button>
                             }
                             trigger="click"
                         >
@@ -89,11 +90,11 @@ function Sections({ projectId, tasks, onSectionSelect, selectedSectionId, Addtas
                         </Popover>
                     </li>
 
-                    <SectionTasks sectionid={item.id} projectId={projectId} tasks={tasks} />
-                    <Form title={'Add Task'} handleAdd={Addtask} />
+                    <SectionTasks sectionid={item.id} projectId={projectId} tasks={tasks} Addtask={Addtask} />
+                    {/* <Form title={'Add Task'} handleAdd={Addtask} isformopen={isformopen} toggleform={toggleform} handleupdate={UpdateTask} handleedit={handleedit} /> */}
                 </div>
             ))}
-            
+
 
         </div>
     )

@@ -30,6 +30,12 @@ const SectionForm = ({ title, handleAdd }) => {
         setinput('')
         setOpen(false)
     }
+    const updateTasks=()=>{
+        
+    }
+    const toggle=()=>{
+        setOpen(!open)
+    }
 
     return (
         <ConfigProvider
@@ -45,7 +51,7 @@ const SectionForm = ({ title, handleAdd }) => {
                 style={{
                     clear: 'both',
                     whiteSpace: 'nowrap',
-                    
+
                 }}
             >
                 <Popover placement="bottomLeft" title={text} content={(
@@ -54,13 +60,12 @@ const SectionForm = ({ title, handleAdd }) => {
                             <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', height: '2rem', justifyContent: 'space-between', width: '15rem', border: 'none' }} />
                             <div className="buttons">
                                 <Button onClick={handlesubmit} style={{ width: '5rem' }}>ADD</Button>
-                                <Button onClick={() => setOpen(!open)}>Cancel</Button>
+                                <Button onClick={ toggle}>Cancel</Button>
                             </div>
                         </form>
                     </div>
-                )} arrow={mergedArrow} open={open}
-                    onOpenChange={(open) => setOpen(open)} trigger="click" style={{marginLeft:200}}>
-                    {/* <Button className='btn' onClick={() => setOpen(!open)} style={{ width: 'auto', marginLeft: "28px",border:'none',display:'flex' }}><PlusOutlined />{title}</Button> */}
+                )} open={open}
+                    onOpenChange={toggle} trigger="click" style={{ marginLeft: 200 }}>
                     <div className='btndiv' style={{ width: 780, marginLeft: "28px", border: 'none', display: 'flex', alignItems: 'center' }}>
                         <div style={{ borderBottom: '0.5px solid red', flex: '1', marginRight: '8px', width: 500 }}></div>
 
