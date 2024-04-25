@@ -7,37 +7,22 @@ import './form.css'
 
 
 const SectionForm = ({ title, handleAdd }) => {
-    const [arrow, setArrow] = useState('Show');
-    const [open, setOpen] = useState(false);
+      const [showForm, setShowForm] = useState(false);
+      const [input, setinput] = useState('')
 
-    const mergedArrow = useMemo(() => {
-        if (arrow === 'Hide') {
-            return false;
-        }
-        if (arrow === 'Show') {
-            return true;
-        }
-        return {
-            pointAtCenter: true,
-        };
-    }, [arrow]);
-
-    const [input, setinput] = useState('')
-
-    const handlesubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         handleAdd(input)
         setinput('')
-        setOpen(false)
+        setShowForm(false);
     }
-    const updateTasks=()=>{
-        
-    }
-    const toggle=()=>{
-        setOpen(!open)
+
+    const toggle = () => {
+        setShowForm(!showForm)
     }
 
     return (
+ 
         <ConfigProvider
             button={{
                 style: {
@@ -46,37 +31,36 @@ const SectionForm = ({ title, handleAdd }) => {
                 },
             }}
         >
-
-            <div
-                style={{
-                    clear: 'both',
-                    whiteSpace: 'nowrap',
-
-                }}
-            >
-                <Popover placement="bottomLeft" title={text} content={(
-                    <div>
-                        <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', height: '6rem', justifyContent: 'space-between', width: '15rem', }}>
-                            <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', height: '2rem', justifyContent: 'space-between', width: '15rem', border: 'none' }} />
-                            <div className="buttons">
-                                <Button onClick={handlesubmit} style={{ width: '5rem' }}>ADD</Button>
-                                <Button onClick={ toggle}>Cancel</Button>
-                            </div>
-                        </form>
-                    </div>
-                )} open={open}
-                    onOpenChange={toggle} trigger="click" style={{ marginLeft: 200 }}>
+            <div style={{ clear: 'both', whiteSpace: 'nowrap' }}>
+                {showForm ? (
+                    <form onSubmit={handleSubmit} style={{marginLeft:'28px',marginTop:'20px'}}>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={input}
+                            placeholder="Name this section"
+                            onChange={(e) => setinput(e.target.value)}
+                            style={{width:770,height:30,padding:'5px'}}
+                        />
+                        <div className="buttons">
+                            <button type="submit" className='addbtn' style={{ width: '6rem' }}>Add section</button>
+                            <button className='cancelbtn' onClick={() => toggle()}>Cancel</button>
+                        </div>
+                    </form>
+                ) : (
                     <div className='btndiv' style={{ width: 780, marginLeft: "28px", border: 'none', display: 'flex', alignItems: 'center' }}>
                         <div style={{ borderBottom: '0.5px solid red', flex: '1', marginRight: '8px', width: 500 }}></div>
 
-                        <button className='btn' onClick={() => setOpen(!open)}>   <PlusOutlined style={{ marginRight: '8px' }} />{title}</button>
+                        <button className='btn' onClick={() => setShowForm(true)}>
+                            <PlusOutlined style={{ marginRight: '8px' }} />
+                            {title}
+                        </button>
                         <div style={{ borderBottom: '0.5px solid red', flex: '1', marginLeft: '8px' }}></div>
                     </div>
-                </Popover>
-
+                )}
             </div>
-
-        </ConfigProvider >
+        </ConfigProvider>
     );
 };
 export default SectionForm;

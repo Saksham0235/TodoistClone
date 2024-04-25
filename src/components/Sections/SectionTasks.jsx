@@ -1,15 +1,13 @@
 import React, { useEffect,useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask } from '../../Api/Api'
-import { Delete_Task_Success } from '../../Store/Features/TodosSlice'
+import { deleteTask ,createSectionTask  } from '../../Api/Api'
+import { DeleteTask,Create } from '../../Store/Features/TodosSlice'
 import { Button, Popover } from 'antd';
 import { CalendarOutlined, EditOutlined } from '@ant-design/icons';
-import Form from '../Form';
-function SectionTasks({ sectionid, projectId, tasks,Addtask }) {
-    // console.log('From SectionTasks',tasks);
+import Form from '../Tasks/Form';
+function SectionTasks({ sectionid, projectId, tasks,Addtask ,selectedSectionId}) {
+    // console.log('From SectionTasks',selectedSectionId);
     const [isformopen, setisformopen] = useState(false)
-
-
     const toggleform = () => {
         setisformopen(!isformopen)
     }
@@ -17,7 +15,18 @@ function SectionTasks({ sectionid, projectId, tasks,Addtask }) {
     const dispatch = useDispatch()
     const Delete = async (id) => {
         const response = await deleteTask(id);
-        dispatch(Delete_Task_Success(id))
+        dispatch(DeleteTask(id))
+    }
+    const AddSectiontask = async (name, date, string,description) => {
+
+        try {
+            const response = await createSectionTask(name, projectId, date, selectedSectionId, string,description)
+            dispatch(Create(response))
+            
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
 
   
@@ -32,6 +41,7 @@ function SectionTasks({ sectionid, projectId, tasks,Addtask }) {
                                 <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between' }}>
                                     <div className="div" style={{ display: "flex", flexDirection: 'column' }}>
                                         <span>{data.content}</span>
+                                        <span style={{fontSize:'10px',color:'gray'}}>{data.description}</span>
                                         <span style={{ color: 'grey', fontSize: '15px' }}>
                                             <CalendarOutlined />{data.due?.string}
                                         </span>
@@ -54,7 +64,7 @@ function SectionTasks({ sectionid, projectId, tasks,Addtask }) {
                         )
                     })
             }
-            <Form title={'Add Task'} handleAdd={Addtask} isformopen={isformopen} toggleform={toggleform}  />
+            <Form title={'Add Task'} handleAdd={AddSectiontask} isformopen={isformopen} toggleform={toggleform}  />
 
         </div>
     )

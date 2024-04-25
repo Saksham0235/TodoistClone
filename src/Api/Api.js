@@ -39,28 +39,30 @@ export const createTask = async (
   projectId,
   date,
   dueString,
-  todaydate
+  todaydate,
+  description
 ) => {
   const api = new TodoistApi(token);
-  console.log(
-    `${content} pid: ${projectId} date : ${date}  string: ${dueString}`,
-    "From api"
-  );
   let response;
-  if (projectId) {
+  // if (projectId) {
     response = await api.addTask({
       content: `${content}`,
       projectId: `${projectId}`,
       due_date: `${date}`,
       due_string: `${dueString}`,
+      description: `${description}`,
+      
     });
-  } else {
-    response = await api.addTask({
-      content: `${content}`,
-      due_date: `${todaydate}`,
-      due_string: `${`Today`}`,
-    });
-  }
+  // } 
+  // else {
+  //   response = await api.addTask({
+  //     content: `${content}`,
+  //     due_date: `${date ? date : todaydate}`,
+  //     due_string: `${dueString}`,
+  //     description: `${description}`,
+  //   });
+  // }
+  console.log("From api ", response);
   return response;
 };
 
@@ -69,8 +71,10 @@ export const createSectionTask = async (
   projectId,
   date,
   sectionid,
-  string
+  string,
+  description
 ) => {
+  console.log(description, "before task created");
   let response;
   if (projectId && !sectionid) {
     response = await api.addTask({
@@ -79,6 +83,7 @@ export const createSectionTask = async (
       sectionId: null,
       due_date: `${date}`,
       due_string: `${string}`,
+      description: `${description}`,
     });
   } else if (projectId && sectionid) {
     response = await api.addTask({
@@ -86,25 +91,32 @@ export const createSectionTask = async (
       sectionId: `${sectionid}`,
       due_date: `${date}`,
       due_string: `${string}`,
+      description: `${description}`,
     });
   } else if (!projectId && !sectionid) {
     response = await api.addTask({
       content: `${content}`,
       due_date: `${date}`,
+      description: `${description}`,
     });
   }
   return response;
 };
 export const updateTask = async (taskid, data) => {
-  const { content, duedate, dueString } = data;
+  const { content, due_date, due_string, description, projectId } = data;
+  console.log(projectId, "projid before response");
+  console.log(due_date, "date before response");
+
   const response = await api.updateTask(taskid, {
     content: content,
-    due_date: duedate,
-    due_string: dueString,
+    due_date: due_date,
+    due_string: due_string,
+    description: description,
+    projectId: projectId,
   });
+  console.log(response, "after submitted");
   return response;
 };
-
 
 export const getsections = async (id) => {
   const response = await api.getSections(id);
@@ -119,8 +131,34 @@ export const createSection = async (name, projectid) => {
   return response;
 };
 
-export const DeleteSection = async (id) => {
+export const deleteSection = async (id) => {
   const api = new TodoistApi(token);
   const response = await api.deleteSection(id);
+  return response;
+};
+
+export const getLabels = async () => {
+  const response = await api.getLabels();
+  return response;
+};
+
+export const deleteLabel = async (id) => {
+  console.log(id, "From api");
+  const response = await api.deleteLabel(id);
+  console.log(response, "From response");
+  return response;
+};
+
+export const createLabel = async (name) => {
+  const response = await api.addLabel({
+    name: `${name}`,
+  });
+  return response;
+};
+
+export const updateSectionAction = async (id, name) => {
+  console.log(`${id} name : ${name}`, "From api");
+  const response = await api.updateSection(id, { name: `${name}` });
+  console.log(response, "api");
   return response;
 };

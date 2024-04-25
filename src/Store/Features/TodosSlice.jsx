@@ -10,26 +10,26 @@ const taskSlice = createSlice({
     name: 'task',
     initialState,
     reducers: {
-        Fetch_tasks_Success: (state, action) => {
+        Fetch: (state, action) => {
             return {
                 ...state.tasks,
                 tasks: action.payload
             }
         },
-        Delete_Task_Success: (state, action) => {
+        DeleteTask: (state, action) => {
             return {
                 ...state,
                 tasks: state.tasks.filter((task) => task.id !== action.payload)
             }
         },
-        Create_Task_Success: (state, action) => {
+        Create: (state, action) => {
             return{
                 ...state,
                tasks:[...state.tasks,action.payload]
 
             }
         },
-        Update_Task_Success: (state, action) => {
+        Update: (state, action) => {
                 state.tasks= state.tasks.map((task) => (task.id === action.payload.id? action.payload : task))
             }
         
@@ -37,6 +37,6 @@ const taskSlice = createSlice({
 })
 
 
-export const { Fetch_tasks_Success, Delete_Task_Success, Create_Task_Success,Update_Task_Success } = taskSlice.actions
+export const { Fetch, DeleteTask, Create,Update } = taskSlice.actions
 
 export default taskSlice.reducer

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Drawer, Space, Typography, Menu } from 'antd';
+import { Typography,  } from 'antd';
 const { Title } = Typography;
 import './home.css'
-import { useSelector, useDispatch } from 'react-redux'
-import { getTasks, deleteTask, getProjects } from '../../Api/Api';
-import { Fetch_Project_Success } from '../../Store/Features/ProjectSlice'
-
-import Tasks from '../Tasks';
-import Sections from '../Sections/Sections'
+import Tasks from '../Tasks/Tasks'
+import LabelDetail from '../Labels/LabelDetail';
 import { Routes,Route, BrowserRouter } from 'react-router-dom';
 import Projects from '../Sidebar/Projects';
+
+import Labels from '../Labels/Labels';
 
 
 const Home = () => {
@@ -26,6 +24,8 @@ const Home = () => {
                
                 <Routes>
                     <Route path='/' element={<Tasks/>} />
+                    <Route path='/app/label' element={<Labels />} />
+                    <Route path='/app/label/:labelid' element={<LabelDetail />} />
                     <Route path='/projects/:projectId' element={<Tasks />} />
                 </Routes>
             </div>
