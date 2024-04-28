@@ -1,12 +1,14 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask ,createSectionTask  } from '../../Api/Api'
-import { DeleteTask,Create } from '../../Store/Features/TodosSlice'
-import { Button, Popover } from 'antd';
+import { deleteTask, createSectionTask,completeTask } from '../../Api/Api'
+import { deleteTaskAction, Create,checkboxTaskTodo } from '../../Store/Features/TodosSlice'
+import { Button, Popover,Checkbox } from 'antd';
 import { CalendarOutlined, EditOutlined } from '@ant-design/icons';
 import Form from '../Tasks/Form';
-function SectionTasks({ sectionid, projectId, tasks,Addtask ,selectedSectionId}) {
+import { useSnackbar } from 'notistack';
+function SectionTasks({ sectionid, projectId, tasks, Addtask, selectedSectionId }) {
     // console.log('From SectionTasks',selectedSectionId);
+    const { enqueueSnackbar } = useSnackbar();
     const [isformopen, setisformopen] = useState(false)
     const toggleform = () => {
         setisformopen(!isformopen)
@@ -15,21 +17,30 @@ function SectionTasks({ sectionid, projectId, tasks,Addtask ,selectedSectionId})
     const dispatch = useDispatch()
     const Delete = async (id) => {
         const response = await deleteTask(id);
-        dispatch(DeleteTask(id))
+        dispatch(deleteTaskAction(id))
     }
-    const AddSectiontask = async (name, date, string,description) => {
+    const AddSectiontask = async (name, date, string, description) => {
 
         try {
-            const response = await createSectionTask(name, projectId, date, selectedSectionId, string,description)
+            const response = await createSectionTask(name, projectId, date, selectedSectionId, string, description)
             dispatch(Create(response))
-            
+
         }
         catch (error) {
             console.log(error)
         }
     }
+    const handleChecbox = async (taskId) => {
+        try {
+            const res = await completeTask(taskId)
+            dispatch(checkboxTaskTodo(taskId))
+            enqueueSnackbar('Task Completed')
+        } catch (error) {
+            console.log('Error in checkboxTask', error);
+        }
+    }
 
-  
+
     return (
         <div>
             {
@@ -40,9 +51,16 @@ function SectionTasks({ sectionid, projectId, tasks,Addtask ,selectedSectionId})
                             <ul key={data.id} style={{ listStyle: 'none' }}>
                                 <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between' }}>
                                     <div className="div" style={{ display: "flex", flexDirection: 'column' }}>
-                                        <span>{data.content}</span>
-                                        <span style={{fontSize:'10px',color:'gray'}}>{data.description}</span>
-                                        <span style={{ color: 'grey', fontSize: '15px' }}>
+                                        <span><Checkbox
+                                            style={{
+                                                paddingRight: '1rem'
+                                            }}
+                                            onChange={() => {
+                                                handleChecbox(data.id)
+                                            }}
+                                        ></Checkbox>{data.content}</span>
+                                        <span style={{ fontSize: '10px', color: 'gray',marginLeft:'2rem' }}>{data.description}</span>
+                                        <span style={{ color: 'grey', fontSize: '15px',marginLeft:'2rem',marginTop:'5px' }}>
                                             <CalendarOutlined />{data.due?.string}
                                         </span>
                                     </div>
@@ -64,7 +82,7 @@ function SectionTasks({ sectionid, projectId, tasks,Addtask ,selectedSectionId})
                         )
                     })
             }
-            <Form title={'Add Task'} handleAdd={AddSectiontask} isformopen={isformopen} toggleform={toggleform}  />
+            <Form title={'Add Task'} handleAdd={AddSectiontask} isformopen={isformopen} toggleform={toggleform} />
 
         </div>
     )

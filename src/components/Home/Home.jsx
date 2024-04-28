@@ -6,11 +6,28 @@ import Tasks from '../Tasks/Tasks'
 import LabelDetail from '../Labels/LabelDetail';
 import { Routes,Route, BrowserRouter } from 'react-router-dom';
 import Projects from '../Sidebar/Projects';
-
+import {getLabels} from '../../Api/Api'
 import Labels from '../Labels/Labels';
+import {fetchLabelSuccess} from '../../Store/Features/LabelsSlice'
+import { useDispatch } from 'react-redux';
 
 
 const Home = () => {
+    const dispatch=useDispatch()
+    
+    const fetchlabels = async () => {
+        try {
+            const response = await getLabels()
+            dispatch(fetchLabelSuccess(response))
+        }
+        catch (err) {
+           console.log('Error in fetchLabels' ,err);
+        }
+    }
+    useEffect(()=>{
+        fetchlabels()
+    },[])
+
 
     return (
 

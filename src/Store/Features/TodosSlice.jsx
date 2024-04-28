@@ -16,27 +16,39 @@ const taskSlice = createSlice({
                 tasks: action.payload
             }
         },
-        DeleteTask: (state, action) => {
+        deleteTaskAction: (state, action) => {
             return {
                 ...state,
                 tasks: state.tasks.filter((task) => task.id !== action.payload)
             }
         },
         Create: (state, action) => {
-            return{
+            return {
                 ...state,
-               tasks:[...state.tasks,action.payload]
+                tasks: [...state.tasks, action.payload]
 
             }
         },
         Update: (state, action) => {
-                state.tasks= state.tasks.map((task) => (task.id === action.payload.id? action.payload : task))
-            }
-        
+            state.tasks = state.tasks.map((task) => (task.id === action.payload.id ? action.payload : task))
+        },
+        checkboxTaskTodo: (state, action) => {
+            state.tasks = state.tasks.map(task => {
+                if (task.id === action.payload) {
+                    return {
+                        ...state,
+                        isCompleted: !task.isCompleted
+                    }
+                }
+                return task
+            })
+        },
+
+
     }
 })
 
 
-export const { Fetch, DeleteTask, Create,Update } = taskSlice.actions
+export const { Fetch, deleteTaskAction, Create, Update, checkboxTaskTodo } = taskSlice.actions
 
 export default taskSlice.reducer

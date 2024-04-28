@@ -1,5 +1,6 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
-
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 const token = "ba4670f35a223378da9949c14bf9ca4fda065168";
 let api = new TodoistApi(token);
 
@@ -8,8 +9,15 @@ export const getProjects = async () => {
   return response;
 };
 
-export const createProject = async (name) => {
-  const response = await api.addProject({ name: `${name}` });
+export const createProject = async (name, favorite, color) => {
+  console.log("name before api", name);
+  console.log("Favourtie before api", favorite);
+
+  const response = await api.addProject({
+    name: `${name}`,
+    isFavorite: `${favorite}`,
+    color: `${color}`,
+  });
   console.log(response, "From Projectapi");
   return response;
 };
@@ -22,6 +30,17 @@ export const DeleteProject = async (Projectid) => {
   } catch (error) {
     throw error;
   }
+};
+
+export const updateProject = async (id, name, favorite,color) => {
+  console.log("name before api", name);
+  const response = await api.updateProject(id, {
+    name: `${name}`,
+    isFavorite: `${favorite}`,
+    color: `${color}`,
+  });
+  console.log(response, "After api");
+  return response;
 };
 
 export const getTasks = async () => {
@@ -40,28 +59,21 @@ export const createTask = async (
   date,
   dueString,
   todaydate,
-  description
+  description,
+  labels
 ) => {
-  const api = new TodoistApi(token);
-  let response;
-  // if (projectId) {
-    response = await api.addTask({
-      content: `${content}`,
-      projectId: `${projectId}`,
-      due_date: `${date}`,
-      due_string: `${dueString}`,
-      description: `${description}`,
-      
-    });
-  // } 
-  // else {
-  //   response = await api.addTask({
-  //     content: `${content}`,
-  //     due_date: `${date ? date : todaydate}`,
-  //     due_string: `${dueString}`,
-  //     description: `${description}`,
-  //   });
-  // }
+  console.log(labels, "From Add api");
+  console.log(projectId, "Id from api");
+
+  let response = await api.addTask({
+    content: `${content}`,
+    projectId: `${projectId}`,
+    due_date: `${date}`,
+    due_string: `${dueString}`,
+    description: `${description}`,
+    labels: labels,
+  });
+
   console.log("From api ", response);
   return response;
 };
@@ -102,17 +114,20 @@ export const createSectionTask = async (
   }
   return response;
 };
-export const updateTask = async (taskid, data) => {
-  const { content, due_date, due_string, description, projectId } = data;
-  console.log(projectId, "projid before response");
-  console.log(due_date, "date before response");
+export const updateTaskapi = async (taskid, data) => {
+  const { content, due_date, due_string, description, projectId, labels } =
+    data;
+  console.log(taskid, "projid before response");
+  console.log(data, "Data before response");
+  // console.log(due_date, "date before response");
 
   const response = await api.updateTask(taskid, {
     content: content,
     due_date: due_date,
     due_string: due_string,
     description: description,
-    projectId: projectId,
+    projectId: `${projectId}`,
+    labels: labels,
   });
   console.log(response, "after submitted");
   return response;
@@ -160,5 +175,17 @@ export const updateSectionAction = async (id, name) => {
   console.log(`${id} name : ${name}`, "From api");
   const response = await api.updateSection(id, { name: `${name}` });
   console.log(response, "api");
+  return response;
+};
+
+export const completeTask = async (id) => {
+  const uuid = uuidv4();
+  const endpoint = `https://api.todoist.com/rest/v2/tasks/${id}/close`;
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Request-Id": uuid,
+    Authorization: `Bearer ${token}`,
+  };
+  const response = await axios.post(endpoint, {}, { headers });
   return response;
 };

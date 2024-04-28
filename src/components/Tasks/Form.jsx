@@ -3,9 +3,10 @@ import { Button, ConfigProvider, Popover, DatePicker, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'
 const text = <span>Title</span>;
 import { useSelector } from 'react-redux';
+import './task.css'
 
 
-const Form = ({ title, handleAdd, projectId, editmode, isformopen, toggleform, handleupdate }) => {
+const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate }) => {
   // console.log('Selected Project id', projectId);
   const [selecteddate, setselecteddate] = useState(null)
   const [selectedstring, setselectedstring] = useState('')
@@ -14,21 +15,22 @@ const Form = ({ title, handleAdd, projectId, editmode, isformopen, toggleform, h
   const [selectedProjectName, setSelectedProjectName] = useState('')
   const Labeldata = useSelector((state) => state.Label.Labels)
   const projectnames = useSelector(state => state.projects.Projects)
-  const [selectedProjectId, setselectedProjectId] = useState(projectId)
+  const [selectedProjectId, setselectedProjectId] = useState('2331888192')
+  const [selectedLabel, setSelectedLabel] = useState([])
+
 
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const selectedProject = projectnames.find(project => project.name === selectedProjectName);
     if (editmode) {
-      handleupdate(input, selecteddate, selectedstring, description, selectedProjectId)
+      handleupdate(input, selecteddate, selectedstring, description, selectedProjectId, selectedLabel)
     }
     else {
       if (!input) {
         alert("Please enter the task")
         return;
       }
-      handleAdd(input, selecteddate, selectedstring, description, selectedProjectId);
+      handleAdd(input, selecteddate, selectedstring, description, selectedProjectId, selectedLabel);
     }
 
     setinput('')
@@ -46,7 +48,7 @@ const Form = ({ title, handleAdd, projectId, editmode, isformopen, toggleform, h
     console.log("String ", string);
   };
   useEffect(() => {
-    if (editmode && editmode.content && editmode.due.date) {
+    if (editmode && editmode.content && editmode.due.date && editmode.labels && editmode.projectId) {
       console.log(editmode, "From useffect");
       setinput(editmode.content)
       if (editmode.due.date) {
@@ -54,13 +56,14 @@ const Form = ({ title, handleAdd, projectId, editmode, isformopen, toggleform, h
         console.log(editmode.due.date, "useffect");
       }
       if (editmode.projectId) {
-        const selectedProject = projectnames.find(project => project.name === selectedProjectName);
-        if (selectedProject) {
-          setselectedProjectId(selectedProject.id);
-        }
+        console.log(editmode.projectId, "From edit projectid");
+        setselectedProjectId(editmode.projectId)
       }
       if (editmode.description) {
         setDescription(editmode.description)
+      }
+      if (editmode.labels) {
+        setSelectedLabel(editmode.labels)
       }
     }
     else {
@@ -69,7 +72,6 @@ const Form = ({ title, handleAdd, projectId, editmode, isformopen, toggleform, h
       setselectedstring('');
     }
   }, [editmode]);
-  // const projectnames = useSelector(state => state.projects.Projects)
 
   return (
     <ConfigProvider
@@ -81,24 +83,30 @@ const Form = ({ title, handleAdd, projectId, editmode, isformopen, toggleform, h
       }}
     >
       {isformopen ? (
-        <form onSubmit={handleSubmit} className='form' style={{ display: 'flex', flexDirection: 'column', height: '8rem', justifyContent: 'space-between', padding: '5px', marginLeft: '30px', }}>
-          <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', outline: 'none', height: '2rem', justifyContent: 'space-between', width: '15rem', border: 'none', fontSize: '15px' }} />
+        <form onSubmit={handleSubmit} className='form' style={{ display: 'flex', flexDirection: 'column', height: '10rem', justifyContent: 'space-between', padding: '5px', marginLeft: '30px', borderRadius: '7px' }}>
+          <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex',border:'none', flexDirection: 'column', outline: 'none', height: '2rem', justifyContent: 'space-between', width: 750,  fontSize: '15px' }} />
           <textarea placeholder='Description' value={description} onChange={(e) => { setDescription(e.target.value); console.log(e.target.value); }} style={{ border: 'none', outline: 'none' }} />
           <Space direction="vertical">
             <DatePicker onChange={onChange} />
           </Space>
 
-          <div className="options" style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div className="options" style={{ display: 'flex', justifyContent: 'space-between',alignItems:'center',marginTop:10 }}>
 
-            <select value={selectedProjectName} style={{ width: 100, height: 30, marginTop: 10, cursor: 'pointer' }} onChange={(e) => setSelectedProjectName(e.target.value)}>
-              <option value={null}>Select Project</option>
+            <select style={{ width: 80, height: 30, cursor: 'pointer',border:'none' }} onChange={(e) => { setselectedProjectId(e.target.value); console.log(e.target.value, "From selecting projectname"); }}>
               {projectnames.map((project) => (
-                <option value={project.name} >{project.name}</option>
+                <option value={project.id} >{project.name}</option>
               ))}
             </select>
             {
               Labeldata &&
-              <select style={{ width: 60, cursor: 'pointer' }} >
+              <select style={{ width: 100, cursor: 'pointer',border:'none',height:30 }}
+                onChange={(e) => {
+                  const selectedOption = e.target.value;
+                  console.log(selectedOption, "From selecting");
+                  setSelectedLabel([selectedOption]);
+                }
+                }>
+                {/* <option value={null}>Select Label</option> */}
                 {Labeldata.map((data) => (
                   <option value={data.name}>{data.name}</option>
                 ))
@@ -106,8 +114,8 @@ const Form = ({ title, handleAdd, projectId, editmode, isformopen, toggleform, h
               </select>
             }
             <div className="buttons">
-              <Button onClick={handleSubmit} style={{ width: '5rem' }}>Ok</Button>
-              <Button onClick={() => toggleform()}>Cancel</Button>
+              <button onClick={handleSubmit} className='addbutton'>{editmode ? "Update Task" : "Add Task"}</button>
+              <button onClick={() => toggleform()} className='cancelbutton' >Cancel</button>
             </div>
           </div>
         </form>

@@ -8,21 +8,24 @@ const ProjectSlice = createSlice({
     name: 'projects',
     initialState,
     reducers: {
-        Fetch_Project_Success: (state, action) => {
+        fetchProjectsAction: (state, action) => {
             state.Projects = action.payload
         },
-        Create_Project(state, action) {
+        createProjectAction(state, action) {
             state.Projects = [...state.Projects, action.payload]
         },
-        Delete_Project_Success(state, action) {
+        deleteProjectAction(state, action) {
             console.log(action.payload);
             return {
                 ...state,
                 Projects: state.Projects.filter((project) => project.id !== action.payload)
             }
+        },
+        updateProjectAction:(state,action)=>{
+            state.Projects=state.Projects.map((project)=>project.id===action.payload.id?action.payload:project)
         }
     }
 })
 
-export const { Fetch_Project_Success, Create_Project, Delete_Project_Success } = ProjectSlice.actions
+export const { fetchProjectsAction, createProjectAction, deleteProjectAction,updateProjectAction } = ProjectSlice.actions
 export default ProjectSlice.reducer

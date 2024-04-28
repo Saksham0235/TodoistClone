@@ -1,0 +1,23 @@
+.cancelbutton {
+  width: 8rem;
+  height: 2rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.addbutton {
+  cursor: pointer;
+  width: 8rem;
+  height: 2rem;
+  background-color: rgb(247, 58, 58);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+}
+.addbutton:hover{
+    background-color: rgb(251, 7, 7)
+
+}

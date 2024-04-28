@@ -17,7 +17,7 @@ function Labels() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const fetchlabels = async () => {
+    const fetchLabels = async () => {
         try {
             const response = await getLabels()
             dispatch(fetchLabelSuccess(response))
@@ -55,24 +55,24 @@ function Labels() {
 
 
     useEffect(() => {
-        fetchlabels()
+        fetchLabels()
     }, [])
     return (
         <div>
-            <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>Labels <Form title='Add Label' handleAdd={AddLabel} /></h1>
+            <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',width: 780 }}>Labels <Form title='' handleAdd={AddLabel} /></h1>
             <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
             {data.map((label) => {
                 return (
                     <ul key={label.id} style={{ listStyle: 'none' }}>
-                        <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 780 }}>
+                        <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 770,marginLeft:'-30px' }}>
                             <div key={label.id} className="div" style={{ display: "flex", flexDirection: 'column', cursor: 'pointer' }}>
 
-                                <Link to={`/app/label/${label.name}-${label.id}`} style={{textDecoration:'none'}}>
-                                <span><TagOutlined style={{marginRight:10}} />
-                                    {label.name}
-                                </span>
+                                <Link to={`/app/label/${label.name}-${label.id}`} style={{ textDecoration: 'none' }}>
+                                    <span>
+                                         <span><TagOutlined style={{ marginRight: 10,color:'gray' }} /></span>
+                                      <span style={{color:'black'}}>{label.name}</span>  
+                                    </span>
                                 </Link>
-
                             </div>
                             <div className="buttons" style={{ width: 100, display: 'flex', justifyContent: 'space-between' }}>
                                 <Button danger onClick={() => HandleDelete(label.id)}>Delete</Button>
