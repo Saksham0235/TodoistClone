@@ -60,7 +60,7 @@ function SectionTasks({ sectionid, projectId, tasks, Addtask, selectedSectionId 
                                             }}
                                         ></Checkbox>{data.content}</span>
                                         <span style={{ fontSize: '10px', color: 'gray',marginLeft:'2rem' }}>{data.description}</span>
-                                        <span style={{ color: 'grey', fontSize: '15px',marginLeft:'2rem',marginTop:'5px' }}>
+                                        <span style={{ color: 'green', fontSize: '15px',marginLeft:'2rem',marginTop:'5px' }}>
                                             <CalendarOutlined />{data.due?.string}
                                         </span>
                                     </div>

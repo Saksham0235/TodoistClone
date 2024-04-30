@@ -1,17 +1,17 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import Form from '../Tasks/Form'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { CalendarOutlined, TagOutlined } from '@ant-design/icons'
 import { Popover, Button } from 'antd'
-import {Create} from '../../Store/Features/TodosSlice'
+import { Create } from '../../Store/Features/TodosSlice'
 import { deleteTask, createTask } from '../../Api/Api'
 
 
 
 function LabelDetail() {
   const [isformopen, setisformopen] = useState(false)
-  
+
   const dispatch = useDispatch()
   const params = useParams()
   const prop = params.labelid
@@ -22,7 +22,7 @@ function LabelDetail() {
   const tasks = useSelector((state) => state.todos.tasks)
   // console.log(tasks,'From Label');
   const taskdata = tasks.filter((task) => task.labels[0] === labelname)
-  console.log(taskdata,"From labels");
+  console.log(taskdata, "From labels");
   const Delete = async (id) => {
     const response = await deleteTask(id);
     dispatch(deleteTaskAction(id))
@@ -33,7 +33,7 @@ function LabelDetail() {
 
   }
   const addTask = async (name, date, string, description, projectId) => {
-    const labels=labelname?[labelname]:[]
+    const labels = labelname ? [labelname] : []
     try {
       const response = await createTask(name, projectId, date, string, todaydate, description, labels)
       dispatch(Create(response))
@@ -56,39 +56,32 @@ function LabelDetail() {
       {
         taskdata.map((data) => (
           <ul key={data.id} style={{ listStyle: 'none' }}>
-            <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 770,marginLeft:'-30px' }}>
+            <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 770, marginLeft: '-30px' }}>
               <div className="div" style={{ display: "flex", flexDirection: 'column' }}>
                 <span>{data.content}</span>
-
                 <span style={{ fontSize: '10px', color: 'gray' }}>{data.description}</span>
                 <span style={{ color: 'grey', fontSize: '15px', }} >
                   <CalendarOutlined />{data.due?.string}
-                  {
-                    data.labels.map((label) => {
-                      return (
-                        <span style={{ fontSize: '14px', color: 'slategrey' }}><TagOutlined style={{ marginLeft: 15 }} />{label}</span>
-                      )
-                    }
+                  {data.labels.map((label) => {
+                    return (
+                      <span style={{ fontSize: '14px', color: 'slategrey' }}><TagOutlined style={{ marginLeft: 15, marginRight: 3 }} />{label}</span>
                     )
+                  })
                   }
                 </span>
               </div>
               <div className="buttons" style={{ width: 100, display: 'flex', justifyContent: 'space-between' }}>
                 {/* <EditOutlined style={{ cursor: 'pointer' }} onClick={() => { handleedit(data.id); setisformopen(true) }} /> */}
-                <Popover
+                <Popover trigger="click"
                   content={<Button danger onClick={() => Delete(data.id)}>Delete</Button>}
-                  trigger="click"
                 >
                   <Button className='listbtn' >{'...'}</Button>
                 </Popover>
-
               </div>
-
             </li>
           </ul>
         ))
       }
-
       <Form title={"Add Task"} handleAdd={addTask} isformopen={isformopen} toggleform={toggleform} />
     </div>
   )

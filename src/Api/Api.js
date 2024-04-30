@@ -1,6 +1,4 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 const token = "ba4670f35a223378da9949c14bf9ca4fda065168";
 let api = new TodoistApi(token);
 
@@ -33,11 +31,20 @@ export const DeleteProject = async (Projectid) => {
 };
 
 export const updateProject = async (id, name, favorite,color) => {
-  console.log("name before api", name);
+  // console.log("fav status  before api", favorite);
   const response = await api.updateProject(id, {
     name: `${name}`,
     isFavorite: `${favorite}`,
     color: `${color}`,
+  });
+  console.log(response, "After api");
+  return response;
+};
+export const updateFavourite = async (id ,favorite) => {
+  console.log("fav id status  before api", favorite);
+  const favorites=favorite.isFavorite
+  const response = await api.updateProject(id, {
+    isFavorite: `${favorites}`,
   });
   console.log(response, "After api");
   return response;
@@ -179,13 +186,12 @@ export const updateSectionAction = async (id, name) => {
 };
 
 export const completeTask = async (id) => {
-  const uuid = uuidv4();
-  const endpoint = `https://api.todoist.com/rest/v2/tasks/${id}/close`;
-  const headers = {
-    "Content-Type": "application/json",
-    "X-Request-Id": uuid,
-    Authorization: `Bearer ${token}`,
-  };
-  const response = await axios.post(endpoint, {}, { headers });
+  const response=api.closeTask(id)
+  console.log(response,"From api close");
   return response;
 };
+export const unCompleteTask = async (id) => {
+  const response=api.reopenTask(id)
+  console.log(response,"After api reopen");
+  return response;
+}

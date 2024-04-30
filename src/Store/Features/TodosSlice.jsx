@@ -33,22 +33,37 @@ const taskSlice = createSlice({
             state.tasks = state.tasks.map((task) => (task.id === action.payload.id ? action.payload : task))
         },
         checkboxTaskTodo: (state, action) => {
+            console.log(action.payload,"from Check slice");
+            console.log(state.tasks,"Before slice");
             state.tasks = state.tasks.map(task => {
                 if (task.id === action.payload) {
                     return {
-                        ...state,
+                        ...task,
                         isCompleted: !task.isCompleted
                     }
                 }
                 return task
             })
-        },
+            console.log(state.tasks,"From slice");
 
+        },
+        unCheckTask: (state, action) => {
+            console.log(action.payload, "from uncheck slice");
+            state.tasks = state.tasks.map((task) => {
+                if (task.id === action.payload) {
+                    return {
+                        ...task,
+                        isCompleted: !task.isCompleted
+                    }
+                }
+                return task
+            })
+        }
 
     }
 })
 
 
-export const { Fetch, deleteTaskAction, Create, Update, checkboxTaskTodo } = taskSlice.actions
+export const { Fetch, deleteTaskAction, Create, Update, checkboxTaskTodo, unCheckTask } = taskSlice.actions
 
 export default taskSlice.reducer

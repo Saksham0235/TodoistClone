@@ -34,6 +34,7 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
     }
 
     setinput('')
+    setselecteddate(null)
     setDescription('')
     toggleform()
   }
@@ -73,6 +74,8 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
     }
   }, [editmode]);
 
+  // console.log('form fjlsdjf')
+
   return (
     <ConfigProvider
       button={{
@@ -83,23 +86,23 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
       }}
     >
       {isformopen ? (
-        <form onSubmit={handleSubmit} className='form' style={{ display: 'flex', flexDirection: 'column', height: '10rem', justifyContent: 'space-between', padding: '5px', marginLeft: '30px', borderRadius: '7px' }}>
-          <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex',border:'none', flexDirection: 'column', outline: 'none', height: '2rem', justifyContent: 'space-between', width: 750,  fontSize: '15px' }} />
+        <form onSubmit={handleSubmit} className='form' style={{ display: 'flex', width: 700, flexDirection: 'column', height: '10rem', justifyContent: 'space-between', padding: '5px', marginLeft: '40px', borderRadius: '7px',marginTop:10 }}>
+          <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', border: 'none', flexDirection: 'column', outline: 'none', height: '2rem', justifyContent: 'space-between', width: 690, fontSize: '15px' }} />
           <textarea placeholder='Description' value={description} onChange={(e) => { setDescription(e.target.value); console.log(e.target.value); }} style={{ border: 'none', outline: 'none' }} />
           <Space direction="vertical">
             <DatePicker onChange={onChange} />
           </Space>
 
-          <div className="options" style={{ display: 'flex', justifyContent: 'space-between',alignItems:'center',marginTop:10 }}>
+          <div className="options" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
 
-            <select style={{ width: 80, height: 30, cursor: 'pointer',border:'none' }} onChange={(e) => { setselectedProjectId(e.target.value); console.log(e.target.value, "From selecting projectname"); }}>
+            <select style={{ width: 80, height: 30, cursor: 'pointer', border: 'none' }} onChange={(e) => { setselectedProjectId(e.target.value); console.log(e.target.value, "From selecting projectname"); }}>
               {projectnames.map((project) => (
                 <option value={project.id} >{project.name}</option>
               ))}
             </select>
             {
               Labeldata &&
-              <select style={{ width: 100, cursor: 'pointer',border:'none',height:30 }}
+              <select style={{ width: 100, cursor: 'pointer', border: 'none', height: 30 }}
                 onChange={(e) => {
                   const selectedOption = e.target.value;
                   console.log(selectedOption, "From selecting");

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { getProjects, createProject, DeleteProject, updateProject } from '../../Api/Api';
-import { fetchProjectsAction, createProjectAction, deleteProjectAction, updateProjectAction } from '../../Store/Features/ProjectSlice'
+import { getProjects, createProject, DeleteProject, updateProject, updateFavourite } from '../../Api/Api';
+import { fetchProjectsAction, createProjectAction, deleteProjectAction, updateProjectAction, updateFavouriteAction, } from '../../Store/Features/ProjectSlice'
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Drawer, Space, Typography, Menu, Popover } from 'antd'
+import { Button, Drawer, Space, Typography, Menu, Popover, Switch } from 'antd'
 const { Title } = Typography;
 import { Link, useNavigate } from 'react-router-dom';
 import ProjectForm from './ProjectForm'
@@ -10,7 +10,7 @@ import { LoadingOutlined, CalendarOutlined, AppstoreOutlined, LeftCircleOutlined
 import { Spin } from 'antd';
 import { useSnackbar } from 'notistack';
 import './project.css'
-
+import Project from './Project';
 
 
 function Projects() {
@@ -29,6 +29,21 @@ function Projects() {
     const [current, setCurrent] = useState('1');
     const [editData, setEditData] = useState('')
     const [isFormOpen, setisFormOpen] = useState(false)
+
+    const toggleFavorite = async (id, isFavorite) => {
+        console.log(isFavorite, "From toggle");
+        const updatedfavorite = !isFavorite
+        console.log(updateFavourite, ' updated favorites');
+        try {
+            const response = await updateFavourite(id, { isFavorite: !isFavorite })
+            dispatch(updateFavouriteAction(response))
+            enqueueSnackbar(isFavorite ? "Removed from favorites" : 'Added to Favorites', { variant: 'success' })
+        }
+        catch (error) {
+            console.log("Failed to update favorite", error);
+            enqueueSnackbar("Failed to update favorite", error, { variant: 'error' })
+        }
+    };
     const onClick = (e) => {
         // console.log('click ', e);
         setCurrent(e.key);
@@ -130,87 +145,53 @@ function Projects() {
                                 <LeftCircleOutlined style={{ fontSize: '20px' }} />
                             </Button>
                         </Space>
-                    }
-                >
+                    }>
                     <div className="homebuttons" style={{ display: 'flex', flexDirection: 'column', height: 100, justifyContent: 'space-around', alignItems: 'flex-start' }}>
-                        <Button onClick={HomePage} style={{ border: "transparent", fontSize: "20px" }}><CalendarOutlined />Today</Button>
-                        <Button onClick={LabelPage} style={{ border: "transparent", fontSize: "20px" }}><AppstoreOutlined />Labels</Button>
+                        <button onClick={HomePage} className='homebtn'><span ><CalendarOutlined style={{ marginRight: 5 }} />Today</span></button>
+                        <button className='labelbtn' onClick={LabelPage} style={{ border: "transparent", fontSize: "20px" }}><span><AppstoreOutlined style={{ marginRight: 5 }} />Labels</span></button>
                     </div>
-                    <hr />
+                    <hr style={{ width: '19vw' }} />
                     {
-                        favprojects &&
-                        <div className='Favourites' >
-
-                            {favprojects?.map((data) => {
-                                return (
-                                    <>
-                                        <h2>Favourites</h2>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', width: 200, alignItems: 'center', marginLeft: '25px' }} onClick={() => handleProjectid(data.id)}>
-                                            <Link to={`/projects/${data.id}-${data.name}`} style={{ fontSize: '18px', color: 'black' }} >
-                                                <span style={{ color: data.color }}>#</span> {data.name}
-                                            </Link>
-                                            <Popover
-                                                content={
-                                                    <div style={{ display: 'flex', height: 100, width: 100, justifyContent: 'space-around', flexDirection: 'column' }}>
-                                                        <Button danger onClick={() => { deleteProjId(data.id) }}>Delete</Button>
-                                                        {/* <Button style={{ border: 'none' }}  >Edit</Button> */}
-                                                        <Button style={{ border: 'none' }} onClick={() => { handleEdit(data.id); setisFormOpen(true) }} >Edit</Button>
-                                                    </div>
-                                                }
-                                                trigger="click"
-                                            >
-                                                <Button className='listbtn' style={{ border: 'none', background: 'transparent', outline: 'none' }} ><span style={{ fontSize: '20px', marginTop: '-1rem' }}>{'...'}</span></Button>
-                                            </Popover>
-                                        </div>
-                                    </>
-
-                                )
-                            })
-
-                            }
-                        </div>
-
+                        favprojects.length > 0 &&
+                        <>
+                            <h2>Favourites</h2>
+                            {(favprojects.map((data) => (
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', width: 200, alignItems: 'center', marginLeft: 5 }} onClick={() => handleProjectid(data.id)}>
+                                        <Link to={`/projects/${data.id}-${data.name}`} style={{ fontSize: '18px', color: 'black' }} >
+                                            <Project data={data} deleteProjId={deleteProjId} toggleFavorite={toggleFavorite} handleEdit={handleEdit} setisFormOpen={setisFormOpen} />
+                                        </Link>
+                                    </div>
+                                </div>))
+                            )}
+                        </>
                     }
-
                     <div className="bottom">
-                        <Menu onClick={onClick} selectable={false} style={{ width: 350, }} mode="inline">
+                        <Menu onClick={onClick} selectable={false} style={{ width: 450, }} mode="inline">
                             <div className="menudiv" style={{ display: 'flex' }}>
-                                <Menu.SubMenu key="sub1" style={{ width: '250px' }} title={<Title level={4} style={{ marginBottom: '30px' }}>My Projects</Title>}>
+                                <Menu.SubMenu key="sub1" style={{ width: '300px' }} title={<Title level={4} style={{ marginBottom: '30px' }}>My Projects</Title>}>
                                     <center> <Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24, margin: 'auto' }} spin />} /></center>
                                     {projects.map((data) => {
                                         return (
-                                            <Menu.Item warnkey={data.id} style={{ fontSize: '20px', display: 'flex', justifyContent: 'space-between', outline: 'none' }} onClick={() => handleProjectid(data.id)}>
+                                            <Menu.Item warnkey={data.id} style={{ fontSize: '20px', display: 'flex', justifyContent: 'space-between', outline: 'none', marginLeft: '-12px' }} onClick={() => handleProjectid(data.id)}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <Link to={`/projects/${data.id}-${data.name}`} >
-                                                        <span style={{ color: data.color }}>#</span>   <span>{data.name}</span>
+                                                        <Project data={data} deleteProjId={deleteProjId} toggleFavorite={toggleFavorite} handleEdit={handleEdit} setisFormOpen={setisFormOpen} />
                                                     </Link>
-                                                    <Popover
-                                                        content={
-                                                            <div style={{ display: 'flex', height: 100, width: 100, justifyContent: 'space-around', flexDirection: 'column' }}>
-                                                                <Button danger onClick={() => { deleteProjId(data.id) }}>Delete</Button>
-                                                                <Button style={{ border: 'none' }} onClick={() => { handleEdit(data.id); setisFormOpen(true) }} >Edit</Button>
-                                                            </div>
-                                                        }
-                                                        trigger="click"
-                                                    >
-                                                        <Button className='listbtn' style={{ border: 'none', background: 'transparent', outline: 'none' }} ><span style={{ fontSize: '20px', marginTop: '-1rem' }}>{'...'}</span></Button>
-                                                    </Popover>
                                                 </div>
                                             </Menu.Item>
                                         )
-                                    })
-                                    }
+                                    })}
                                 </Menu.SubMenu>
-                                <div style={{marginTop:'10px'}}>
-                                <ProjectForm  title={""} handleAdd={addProject} onClick={handleFormClick} editmode={editData} toggle={toggle} isFormOpen={isFormOpen} handleUpdate={handleUpdate} />
+                                <div style={{ marginTop: '10px' }}>
+                                    <ProjectForm title={""} handleAdd={addProject} onClick={handleFormClick} editmode={editData} toggle={toggle} isFormOpen={isFormOpen} handleUpdate={handleUpdate} />
                                 </div>
                             </div>
                         </Menu>
                     </div>
                 </Drawer>
-            </div>
-
-        </div>
+            </div >
+        </div >
     )
 }
 

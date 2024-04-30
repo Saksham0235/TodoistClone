@@ -23,9 +23,14 @@ const ProjectSlice = createSlice({
         },
         updateProjectAction:(state,action)=>{
             state.Projects=state.Projects.map((project)=>project.id===action.payload.id?action.payload:project)
+        },
+        updateFavouriteAction: (state, action) => {
+            // console.log(action.payload,"From Slice");
+            state.Projects=state.Projects.map((project)=>project.id===action.payload.id?action.payload:project)
+          }
         }
-    }
+    
 })
 
-export const { fetchProjectsAction, createProjectAction, deleteProjectAction,updateProjectAction } = ProjectSlice.actions
+export const { fetchProjectsAction, createProjectAction, deleteProjectAction,updateProjectAction,updateFavouriteAction } = ProjectSlice.actions
 export default ProjectSlice.reducer

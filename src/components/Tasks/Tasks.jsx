@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Typography, Popover } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask, getTasks, createTask, completeTask, updateTaskapi } from '../../Api/Api'
-import { deleteTaskAction, Fetch, Create, Update, checkboxTaskTodo } from '../../Store/Features/TodosSlice'
+import { deleteTask, getTasks, createTask, completeTask, updateTaskapi, unCompleteTask } from '../../Api/Api'
+import { deleteTaskAction, Fetch, Create, Update, checkboxTaskTodo, unCheckTask } from '../../Store/Features/TodosSlice'
 import { useParams } from 'react-router-dom'
 import Sections from '../Sections/Sections';
 import { LoadingOutlined, CalendarOutlined, EditOutlined, TagOutlined } from '@ant-design/icons';
@@ -11,6 +11,7 @@ import Form from './Form'
 const { Title } = Typography;
 import { useSnackbar } from 'notistack';
 import './task.css'
+import Taskdata from './TodayTask';
 
 function Tasks() {
 
@@ -25,13 +26,13 @@ function Tasks() {
     const [isformopen, setisformopen] = useState(false)
     const [seletedTaskId, setSelectedTaskId] = useState(null)
     const [openForm, setOpenForm] = useState(false)
+    const [completed, setCompleted] = useState(false)
+    const task = useSelector(state => state.todos.tasks)
+    const activeTasks = task.filter(task => !task.isCompleted);
 
 
     const toggleform = () => {
-        // console.log(isformopen, "State of form");
         setisformopen(() => !isformopen)
-        // seteditdata(null)
-        // setSelectedTaskId(null)
     }
     const toggleform1 = () => {
         setOpenForm(() => !openForm)
@@ -42,7 +43,7 @@ function Tasks() {
         const response = await deleteTask(id);
         dispatch(deleteTaskAction(id))
     }
-    const task = useSelector(state => state.todos.tasks)
+
     // console.log(task, "from tasks");
 
     useEffect(() => {
@@ -83,6 +84,7 @@ function Tasks() {
         // console.log(data, 'From handleedit');
         seteditdata(data)
         setSelectedTaskId(taskid)
+
     }
 
     const updateTaskFunc = async (content, due_date, due_string, description, projectId, labels) => {
@@ -106,11 +108,28 @@ function Tasks() {
             console.log('Error updating task', error);
         }
     }
+    const handleUncheckTask = async (taskid) => {
+        console.log(taskid, "Uncheck");
+        setCompleted(false)
+        try {
+            const response = await unCompleteTask(taskid)
+            dispatch(unCheckTask(taskid))
+            console.log('Before updating from uncheck', completed);
+            console.log(response, "From uncomplete function");
+            console.log(completed, "State of complete in Uncheckbox");
+        }
+        catch (err) {
+            console.log('Error in uncheckTask', err);
+        }
+    }
     const handleChecbox = async (taskId) => {
+        setCompleted(true)
         try {
             const res = await completeTask(taskId)
+            console.log("Before updating", completed);
             dispatch(checkboxTaskTodo(taskId))
-            enqueueSnackbar('Task Completed', { variant: 'success' })
+            console.log(completed, "State of complete in checkbox");
+            enqueueSnackbar(<div  style={{display:'flex',justifyContent:'space-between',alignItems:'center',width:200}}><span style={{fontSize:'15px',fontWeight:550}}>1 task completed </span><button className='alertbtn' onClick={() => handleUncheckTask(taskId)}>Undo</button></div> ,{variant:'info'})
         } catch (error) {
             console.log('Error in checkboxTask', error);
         }
@@ -128,10 +147,10 @@ function Tasks() {
     const formatteddate = `${day} ${monthname}`
 
     // Data containing date set to today's date --------------
-    const todaydata = task.filter((element) => element?.due?.date === todaydate && (element.sectionId === null))
+    const todaydata = activeTasks.filter((element) => element?.due?.date === todaydate)
     // console.log('TodayDAta', todaydata);
 
-    const tasklist = task.filter(task => (task.projectId === projectId) && (task.sectionId === null))
+    const tasklist = activeTasks.filter(task => (task?.projectId === projectId) && (task?.sectionId === null))
     // console.log(tasklist, "Task list");
 
     return (
@@ -142,55 +161,14 @@ function Tasks() {
             <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
             {
                 projectName ?
-
                     tasklist.map((data) => (
                         <div >
                             {
                                 seletedTaskId === data.id ?
                                     (<Form editmode={editdata} UpdateTask={updateTaskFunc} isformopen={openForm} toggleform={toggleform1} handleupdate={updateTaskFunc} />)
                                     :
-                                    (
-                                        <ul key={data.id} style={{ listStyle: 'none' }}>
-                                            <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 770, }}>
-                                                <div className="div" style={{ display: "flex", flexDirection: 'column' }}>
-                                                    <span style={{ display: 'flex', alignItems: 'center' }}><Checkbox
-                                                        style={{
-                                                            paddingRight: '1rem', marginTop: '-5px'
-                                                        }}
-                                                        onChange={() => {
-                                                            handleChecbox(data.id)
-                                                        }}
-                                                    ></Checkbox>
-                                                        {data.content}</span>
-
-                                                    <span style={{ fontSize: '13px', color: 'gray', marginTop: '3px', marginBottom: '3px', marginLeft: '2rem' }}>
-                                                        {data.description}
-                                                    </span>
-                                                    <span style={{ color: 'green', fontSize: '15px', width: 130, display: 'flex', justifyContent: 'space-between', marginLeft: '2rem' }} >
-                                                        <span><CalendarOutlined />{data.due?.string === todaydate ? 'Today' : data.due?.string}</span>
-                                                        {data.labels.map((label) => {
-                                                            return (<span style={{ fontSize: '14px', color: 'slategrey' }}><TagOutlined style={{ marginRight: 3 }} />{label}</span>)
-                                                        })
-                                                        }
-                                                    </span>
-                                                </div>
-                                                <div className="buttons" style={{ width: 100, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                    <EditOutlined style={{ cursor: 'pointer' }} onClick={() => { handleedit(data.id); setOpenForm(true) }} />
-                                                    <Popover
-                                                        content={<Button danger onClick={() => Delete(data.id)}>Delete</Button>}
-                                                        trigger="click"
-                                                    >
-                                                        <Button className='listbtn' >{'...'}</Button>
-                                                    </Popover>
-
-                                                </div>
-
-                                            </li>
-
-                                        </ul>
-                                    )
+                                    (<Taskdata data={data} title={'taskdata'} Delete={Delete} handleedit={handleedit} todaydate={todaydate} handleChecbox={handleChecbox} setOpenForm={setOpenForm} />)
                             }
-
                         </div>
                     ))
                     :
@@ -200,54 +178,16 @@ function Tasks() {
                                 seletedTaskId === data.id ?
                                     (<Form editmode={editdata} UpdateTask={updateTaskFunc} isformopen={openForm} toggleform={toggleform1} handleupdate={updateTaskFunc} />)
                                     :
-                                    (<ul key={data.id} style={{ listStyle: 'none' }}>
-                                        <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 750 }}>
-                                            <div className="div" style={{ display: "flex", flexDirection: 'column' }}>
-                                                <span ><Checkbox
-                                                    style={{
-                                                        paddingRight: '1rem', marginTop: '-5px'
-                                                    }}
-                                                    onChange={() => {
-                                                        handleChecbox(data.id)
-                                                    }}
-                                                ></Checkbox>
-                                                    {data.content}</span>
-                                                {
-                                                    data.labels.map((label) => (
-                                                        <span style={{ fontSize: '14px',marginLeft:'2rem',marginTop:'5px',color:'grey' }}><TagOutlined style={{ marginRight: 3 }} />{label}</span>
-                                                    ))
-                                                }
-                                                <span style={{ fontSize: '13px', color: 'gray', marginLeft: '2rem' }}>{data.description}</span>
-                                            </div>
-                                            <div className="buttons" style={{ width: 100, display: 'flex', justifyContent: 'space-between' }}>
-                                                <EditOutlined style={{ cursor: 'pointer' }} onClick={() => { handleedit(data.id); setOpenForm(true) }} />
-                                                <Popover
-                                                    content={
-                                                        <Button danger onClick={() => Delete(data.id)}>Delete</Button>
-                                                    }
-
-                                                    trigger="click"
-                                                >
-                                                    <Button className='listbtn' >{'...'}</Button>
-                                                </Popover>
-
-                                            </div>
-                                        </li>
-                                    </ul>)
-
+                                    (<Taskdata data={data} title={'todaydata'} Delete={Delete} handleedit={handleedit} todaydate={todaydate} handleChecbox={handleChecbox} setOpenForm={setOpenForm} />)
                             }
-
                         </div>
-
                     ))
             }
             <Form title={"Add Task"} handleAdd={addTask} UpdateTask={updateTaskFunc} isformopen={isformopen} toggleform={toggleform} handleupdate={updateTaskFunc} />
             {
-                projectId && <Sections projectId={projectId} tasks={task} UpdateTask={updateTaskFunc} />
+                projectId && <Sections projectId={projectId} tasks={task} UpdateTask={updateTaskFunc} handleedit={handleedit} />
             }
-
-        </div>
-
+        </div >
     )
 }
 
