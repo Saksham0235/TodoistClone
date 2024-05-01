@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, ConfigProvider, Popover, DatePicker, Space } from 'antd';
+import { ConfigProvider, DatePicker, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'
-const text = <span>Title</span>;
 import { useSelector } from 'react-redux';
 import './task.css'
 
@@ -12,10 +11,10 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
   const [selectedstring, setselectedstring] = useState('')
   const [input, setinput] = useState('')
   const [description, setDescription] = useState('')
-  const [selectedProjectName, setSelectedProjectName] = useState('')
   const Labeldata = useSelector((state) => state.Label.Labels)
   const projectnames = useSelector(state => state.projects.Projects)
-  const [selectedProjectId, setselectedProjectId] = useState('2331888192')
+  const projidinbox='2331888192'
+  const [selectedProjectId, setselectedProjectId] = useState(projidinbox)
   const [selectedLabel, setSelectedLabel] = useState([])
 
 
@@ -54,9 +53,8 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
       setinput(editmode.content)
       if (editmode.due.date) {
         setselecteddate(editmode.due.date)
-        console.log(editmode.due.date, "useffect");
       }
-      if (editmode.projectId) {
+      if (editmode.projectId) { 
         console.log(editmode.projectId, "From edit projectid");
         setselectedProjectId(editmode.projectId)
       }
@@ -86,7 +84,7 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
       }}
     >
       {isformopen ? (
-        <form onSubmit={handleSubmit} className='form' style={{ display: 'flex', width: 700, flexDirection: 'column', height: '10rem', justifyContent: 'space-between', padding: '5px', marginLeft: '40px', borderRadius: '7px',marginTop:10 }}>
+        <form onSubmit={handleSubmit} className='form' style={{ display: 'flex', width: 700, flexDirection: 'column', height: '10rem', justifyContent: 'space-between', padding: '5px', marginLeft: '40px', borderRadius: '7px', marginTop: 10 }}>
           <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', border: 'none', flexDirection: 'column', outline: 'none', height: '2rem', justifyContent: 'space-between', width: 690, fontSize: '15px' }} />
           <textarea placeholder='Description' value={description} onChange={(e) => { setDescription(e.target.value); console.log(e.target.value); }} style={{ border: 'none', outline: 'none' }} />
           <Space direction="vertical">
@@ -95,7 +93,8 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
 
           <div className="options" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
 
-            <select style={{ width: 80, height: 30, cursor: 'pointer', border: 'none' }} onChange={(e) => { setselectedProjectId(e.target.value); console.log(e.target.value, "From selecting projectname"); }}>
+            <select style={{ width: 100, height: 30, cursor: 'pointer', border: 'none' }} onChange={(e) => { setselectedProjectId(e.target.value); console.log(e.target.value, "From selecting projectname"); }}>
+              <option value={null}>Select Project</option>
               {projectnames.map((project) => (
                 <option value={project.id} >{project.name}</option>
               ))}
@@ -128,7 +127,7 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
           whiteSpace: 'nowrap',
         }}
       >
-        <Button className='addicon' onClick={() => toggleform()} style={{ width: 'auto', marginLeft: "30px", display: 'flex', border: 'none' }}><PlusOutlined />{title}</Button>
+        <button className='Addformbutton' onClick={() => toggleform()} style={{ marginLeft: "30px", display: 'flex', border: 'none' }}><PlusOutlined style={{ marginRight: 5 }} />{title}</button>
 
       </div>)}
 

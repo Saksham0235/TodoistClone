@@ -30,7 +30,9 @@ const taskSlice = createSlice({
             }
         },
         Update: (state, action) => {
-            state.tasks = state.tasks.map((task) => (task.id === action.payload.id ? action.payload : task))
+            console.log(action.payload,"Before update in slice");
+            state.tasks = state.tasks.map((task) => task.id === action.payload.id? action.payload : task)
+            console.log(state.tasks, "After update in slice");
         },
         checkboxTaskTodo: (state, action) => {
             console.log(action.payload,"from Check slice");

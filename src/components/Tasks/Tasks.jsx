@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Typography, Popover } from 'antd'
+import { Typography } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteTask, getTasks, createTask, completeTask, updateTaskapi, unCompleteTask } from '../../Api/Api'
+import { deleteTask, getTasks, createTask, completeTask, updateTaskapi, unCompleteTask, moveTask } from '../../Api/Api'
 import { deleteTaskAction, Fetch, Create, Update, checkboxTaskTodo, unCheckTask } from '../../Store/Features/TodosSlice'
 import { useParams } from 'react-router-dom'
 import Sections from '../Sections/Sections';
-import { LoadingOutlined, CalendarOutlined, EditOutlined, TagOutlined } from '@ant-design/icons';
-import { Spin, Checkbox } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 import Form from './Form'
 const { Title } = Typography;
 import { useSnackbar } from 'notistack';
@@ -43,21 +43,18 @@ function Tasks() {
         const response = await deleteTask(id);
         dispatch(deleteTaskAction(id))
     }
-
-    // console.log(task, "from tasks");
-
-    useEffect(() => {
-        const fetchtask = async () => {
-            try {
-                const response = await getTasks()
-                dispatch(Fetch(response))
-                setLoading(false);
-                enqueueSnackbar("Fetched tasks", { variant: 'success' })
-            }
-            catch (err) {
-                enqueueSnackbar('Failed in fetch task: ', err, { variant: 'error' })
-            }
+    const fetchtask = async () => {
+        try {
+            const response = await getTasks()
+            dispatch(Fetch(response))
+            setLoading(false);
+            enqueueSnackbar("Fetched tasks", { variant: 'success' })
         }
+        catch (err) {
+            enqueueSnackbar('Failed in fetch task: ', err, { variant: 'error' })
+        }
+    }
+    useEffect(() => {
         fetchtask()
     }, [])
 
@@ -96,11 +93,13 @@ function Tasks() {
                     due_date: due_date,
                     due_string: due_string,
                     description: description,
-                    projectId: `${projectId}`,
+                    projectId: projectId,
                     labels: labels
                 })
-            console.log(response, "From updatefun");
+            await moveTask(editdata.id, projectId);
+            console.log(response, "After sending data to api");
             dispatch(Update(response))
+            fetchtask()
             setisformopen(false)
             // seteditdata(null)
         }
@@ -129,7 +128,7 @@ function Tasks() {
             console.log("Before updating", completed);
             dispatch(checkboxTaskTodo(taskId))
             console.log(completed, "State of complete in checkbox");
-            enqueueSnackbar(<div  style={{display:'flex',justifyContent:'space-between',alignItems:'center',width:200}}><span style={{fontSize:'15px',fontWeight:550}}>1 task completed </span><button className='alertbtn' onClick={() => handleUncheckTask(taskId)}>Undo</button></div> ,{variant:'info'})
+            enqueueSnackbar(<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: 200 }}><span style={{ fontSize: '15px', fontWeight: 550 }}>1 task completed </span><button className='alertbtn' onClick={() => handleUncheckTask(taskId)}>Undo</button></div>, { variant: 'info' })
         } catch (error) {
             console.log('Error in checkboxTask', error);
         }

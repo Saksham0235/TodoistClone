@@ -13,13 +13,12 @@
   padding-top: 10px;
 }
 .homebtn:hover {
-    background-color: rgb(239, 238, 238);
+  background-color: rgb(239, 238, 238);
 }
 
-/* .homebtn:focus {
+.homebtn:active {
   background-color: rgba(251, 198, 198, 0.338);
-  color: red;
-} */
+}
 .labelbtn {
   cursor: pointer;
   background-color: transparent;
@@ -32,13 +31,12 @@
   padding-top: 10px;
 }
 .labelbtn:hover {
-    background-color: rgb(239, 238, 238);
+  background-color: rgb(239, 238, 238);
 }
 
-/* .labelbtn:focus {
+.labelbtn:active {
   background-color: rgba(251, 198, 198, 0.338);
-  color: red;
-} */
+}
 .projectbtn {
   display: flex;
   justify-content: space-between;
@@ -53,7 +51,7 @@
   padding-top: 10px;
 }
 .projectbtn:hover {
-    background-color: rgb(239, 238, 238);
+  background-color: rgb(239, 238, 238);
 }
 
 .projectbtn:active {

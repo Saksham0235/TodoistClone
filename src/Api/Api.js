@@ -1,6 +1,7 @@
 import { TodoistApi } from "@doist/todoist-api-typescript";
 const token = "ba4670f35a223378da9949c14bf9ca4fda065168";
 let api = new TodoistApi(token);
+import axios from 'axios'
 
 export const getProjects = async () => {
   const response = await api.getProjects();
@@ -30,7 +31,7 @@ export const DeleteProject = async (Projectid) => {
   }
 };
 
-export const updateProject = async (id, name, favorite,color) => {
+export const updateProject = async (id, name, favorite, color) => {
   // console.log("fav status  before api", favorite);
   const response = await api.updateProject(id, {
     name: `${name}`,
@@ -40,9 +41,9 @@ export const updateProject = async (id, name, favorite,color) => {
   console.log(response, "After api");
   return response;
 };
-export const updateFavourite = async (id ,favorite) => {
+export const updateFavourite = async (id, favorite) => {
   console.log("fav id status  before api", favorite);
-  const favorites=favorite.isFavorite
+  const favorites = favorite.isFavorite;
   const response = await api.updateProject(id, {
     isFavorite: `${favorites}`,
   });
@@ -124,22 +125,52 @@ export const createSectionTask = async (
 export const updateTaskapi = async (taskid, data) => {
   const { content, due_date, due_string, description, projectId, labels } =
     data;
-  console.log(taskid, "projid before response");
-  console.log(data, "Data before response");
-  // console.log(due_date, "date before response");
+
+  console.log(data, "data before api  response");
+  console.log(projectId, "projid before response api");
 
   const response = await api.updateTask(taskid, {
     content: content,
     due_date: due_date,
     due_string: due_string,
     description: description,
-    projectId: `${projectId}`,
+    projectId: projectId,
     labels: labels,
   });
   console.log(response, "after submitted");
   return response;
 };
 
+export const moveTask = async (taskId, projectId) => {
+  console.log(taskId, 'Taskid before move');
+  console.log(projectId,"From move task api");
+  const requestBody = {
+    commands: [
+      {
+        type: "item_move",
+        args: {
+          id: taskId,
+          project_id: projectId,
+        },
+        uuid: Math.random().toString(36).substring(7),
+      },
+    ],
+  };
+
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+  try {
+  const response=await  axios.post("https://api.todoist.com/sync/v9/sync", requestBody, {
+      headers,
+    });
+    console.log("after moving api ",response.data);
+    return response.data;
+  } catch (error) {
+    console.log("Error in moving Task in api", error);
+  }
+};
 export const getsections = async (id) => {
   const response = await api.getSections(id);
   return response;
@@ -186,12 +217,12 @@ export const updateSectionAction = async (id, name) => {
 };
 
 export const completeTask = async (id) => {
-  const response=api.closeTask(id)
-  console.log(response,"From api close");
+  const response = api.closeTask(id);
+  console.log(response, "From api close");
   return response;
 };
 export const unCompleteTask = async (id) => {
-  const response=api.reopenTask(id)
-  console.log(response,"After api reopen");
+  const response = api.reopenTask(id);
+  console.log(response, "After api reopen");
   return response;
-}
+};
