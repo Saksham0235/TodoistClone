@@ -97,7 +97,6 @@ function Tasks() {
                     projectId: projectId,
                     labels: labels
                 })
-
             console.log(response, "After sending data to api");
             dispatch(Update(response))
             fetchtask()
@@ -134,9 +133,6 @@ function Tasks() {
             console.log('Error in checkboxTask', error);
         }
     }
-
-
-
     const today = new Date()
     const year = today.getFullYear()
     const month = today.getMonth() + 1
@@ -149,9 +145,7 @@ function Tasks() {
     // Data containing date set to today's date --------------
     const todaydata = activeTasks.filter((element) => element?.due?.date === todaydate)
     // console.log('TodayDAta', todaydata);
-
     const tasklist = activeTasks.filter(task => (task?.projectId === projectId) && (task?.sectionId === null))
-    // console.log(tasklist, "Task list");
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', marginTop: '-40px', marginLeft: '3rem' }}>
@@ -190,5 +184,4 @@ function Tasks() {
         </div >
     )
 }
-
 export default Tasks

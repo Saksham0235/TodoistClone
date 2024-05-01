@@ -12,7 +12,7 @@ const Form = ({ title, handleAdd, editmode, toggle, isFormOpen, handleUpdate }) 
   const handlesubmit = (e) => {
     e.preventDefault()
     if (editmode) {
-      handleUpdate(input, favorite,colorName)
+      handleUpdate(input, favorite, colorName)
     }
     else {
       if (!input) {
@@ -49,38 +49,45 @@ const Form = ({ title, handleAdd, editmode, toggle, isFormOpen, handleUpdate }) 
         <PlusOutlined />{title}
       </Button>
       <Modal
-        title={editmode ? 'Update Task' : "Add Task"}
+        title={title === '' ? 'Add Label' : "Add Project"}
         open={isFormOpen}
         onCancel={() => toggle()}
         onOk={handlesubmit}
         width={500}
         styles={{ height: '250px', overflowY: 'auto' }}
       >
-        <div style={{ height: 200, display: 'flex', justifyContent: 'space-between', }} >
-          <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', height: '13rem', justifyContent: 'space-between', width: '12rem' }}>
-            <label style={{ fontSize: '1rem', fontWeight: 550 }}>Name</label>
-            <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', height: '2rem', justifyContent: 'space-between', width: '25rem', border: '1px solid lightgrey', borderRadius: '5px', arginTop: '10px' }} />
-            <label style={{ fontSize: '1rem', fontWeight: 550, marginTop: '5px' }}>Color</label>
-            <select style={{ width: "25rem", height: 30, border: '1px solid lightgrey', borderRadius: '5px' }} onChange={(e) => { setColorName(e.target.value); }}>
-              <option value={'charcoal'}>Charcoal</option>
-              <option value={'blue'}>Blue</option>
-              <option value={'green'}>Green</option>
-              <option value={'red'}>Red</option>
-              <option value={'yellow'}>Yellow</option>
-              <option value={'grey'}>Grey</option>
-              <option value={'orange'}>Orange</option>
-              <option value='Mint Green'>Mint Green</option>
-              <option value={'Teal'}>Teal</option>
-              <option value={'Sky Blue'}>Sky Blue</option>
-              <option value={'Violet'}>Violet</option>
-              <option value={'Salmon'}>Salmon</option>
-            </select>
-            <div style={{ display: 'flex', marginTop: '10px', alignItems: 'center' }}>
-              <Switch defaultChecked onChange={onChange} checked={favorite} style={{ width: 40, marginRight: '5px' }} />
-              <h4 >Favourite</h4>
-            </div>
-          </form>
-        </div>
+        {
+          title === '' ? (<div style={{ height: 100, display: 'flex', justifyContent: 'space-between', }} >
+            <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', height: '5rem', justifyContent: 'space-around', width: '12rem' }}>
+              <label style={{ fontSize: '1rem', fontWeight: 550 }}>Name</label>
+              <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', height: '2rem', justifyContent: 'space-between', width: '25rem', border: '1px solid lightgrey', borderRadius: '5px', arginTop: '10px' }} />
+            </form>
+          </div>) : (<div style={{ height: 200, display: 'flex', justifyContent: 'space-between', }} >
+            <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', height: '13rem', justifyContent: 'space-between', width: '12rem' }}>
+              <label style={{ fontSize: '1rem', fontWeight: 550 }}>Name</label>
+              <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', height: '2rem', justifyContent: 'space-between', width: '25rem', border: '1px solid lightgrey', borderRadius: '5px', arginTop: '10px' }} />
+              <label style={{ fontSize: '1rem', fontWeight: 550, marginTop: '5px' }}>Color</label>
+              <select style={{ width: "25rem", height: 30, border: '1px solid lightgrey', borderRadius: '5px' }} onChange={(e) => { setColorName(e.target.value); }}>
+                <option value={'charcoal'}>Charcoal</option>
+                <option value={'blue'}>Blue</option>
+                <option value={'green'}>Green</option>
+                <option value={'red'}>Red</option>
+                <option value={'yellow'}>Yellow</option>
+                <option value={'grey'}>Grey</option>
+                <option value={'orange'}>Orange</option>
+                <option value='Mint Green'>Mint Green</option>
+                <option value={'Teal'}>Teal</option>
+                <option value={'Sky Blue'}>Sky Blue</option>
+                <option value={'Violet'}>Violet</option>
+                <option value={'Salmon'}>Salmon</option>
+              </select>
+              <div style={{ display: 'flex', marginTop: '10px', alignItems: 'center' }}>
+                <Switch defaultChecked onChange={onChange} checked={favorite} style={{ width: 40, marginRight: '5px' }} />
+                <h4 >Favourite</h4>
+              </div>
+            </form>
+          </div>)
+        }
       </Modal>
     </>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getProjects, createProject, DeleteProject, updateProject, updateFavourite } from '../../Api/Api';
 import { fetchProjectsAction, createProjectAction, deleteProjectAction, updateProjectAction, updateFavouriteAction, } from '../../Store/Features/ProjectSlice'
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Drawer, Space, Typography, Menu, Popover, Switch } from 'antd'
+import { Button, Drawer, Space, Typography, Menu } from 'antd'
 const { Title } = Typography;
 import { Link, useNavigate } from 'react-router-dom';
 import ProjectForm from './ProjectForm'
@@ -31,8 +31,6 @@ function Projects() {
     const [isFormOpen, setisFormOpen] = useState(false)
 
     const toggleFavorite = async (id, isFavorite) => {
-        console.log(isFavorite, "From toggle");
-        const updatedfavorite = !isFavorite
         console.log(updateFavourite, ' updated favorites');
         try {
             const response = await updateFavourite(id, { isFavorite: !isFavorite })
@@ -45,7 +43,6 @@ function Projects() {
         }
     };
     const onClick = (e) => {
-        // console.log('click ', e);
         setCurrent(e.key);
     };
     const navigate = useNavigate();
@@ -60,16 +57,12 @@ function Projects() {
             enqueueSnackbar("Failed in fetching Projects", error, { variant: 'error' })
         }
     }
-
     const showDrawer = () => {
         setOpen(true);
     };
-
     const onClose = () => {
         setOpen(false);
     };
-
-
     const handleProjectid = (id) => {
         setprojectid(id)
     }
@@ -81,7 +74,6 @@ function Projects() {
         setisFormOpen(() => !isFormOpen)
         setEditData(null)
     }
-
     const addProject = async (name, isFavorite, color) => {
         try {
             const response = await createProject(name, isFavorite, color)
@@ -102,7 +94,6 @@ function Projects() {
             console.log('Error updating project', err);
         }
     }
-
     const deleteProjId = async (id) => {
         try {
             const response = await DeleteProject(id)
@@ -114,12 +105,9 @@ function Projects() {
         }
     }
     useEffect(() => { fetchprojects() }, [projectid])
-
-
     const HomePage = () => {
         navigate('/')
         setprojectid(null)
-
     }
     const LabelPage = () => {
         navigate('/app/label')
@@ -130,8 +118,6 @@ function Projects() {
         const data = dataset[0]
         setEditData(data)
     }
-
-
     return (
         <div>
             <div className="left">

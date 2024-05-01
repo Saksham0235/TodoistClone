@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function Labels() {
     const data = useSelector((state) => state.Label.Labels)
     const { enqueueSnackbar } = useSnackbar();
+    const [isFormOpen, setisFormOpen] = useState(false)
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -52,14 +53,17 @@ function Labels() {
             console.log('Error creating label', err);
         }
     }
-
+    const toggle = () => {
+        console.log(isFormOpen, "State of Form");
+        setisFormOpen(() => !isFormOpen)
+    }
 
     useEffect(() => {
         fetchLabels()
     }, [])
     return (
         <div>
-            <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',width: 780 }}>Labels <Form title='' handleAdd={AddLabel} /></h1>
+            <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',width: 780 }}>Labels <Form title='' toggle={toggle} handleAdd={AddLabel} isFormOpen={isFormOpen} /></h1>
             <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
             {data.map((label) => {
                 return (
