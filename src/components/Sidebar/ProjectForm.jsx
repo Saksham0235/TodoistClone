@@ -49,7 +49,7 @@ const Form = ({ title, handleAdd, editmode, toggle, isFormOpen, handleUpdate }) 
         <PlusOutlined />{title}
       </Button>
       <Modal
-        title={title === '' ? 'Add Label' : "Add Project"}
+        title={title === 'Add' ? 'Add Label' : "Add Project"}
         open={isFormOpen}
         onCancel={() => toggle()}
         onOk={handlesubmit}
@@ -57,7 +57,7 @@ const Form = ({ title, handleAdd, editmode, toggle, isFormOpen, handleUpdate }) 
         styles={{ height: '250px', overflowY: 'auto' }}
       >
         {
-          title === '' ? (<div style={{ height: 100, display: 'flex', justifyContent: 'space-between', }} >
+          title === 'Add' ? (<div style={{ height: 100, display: 'flex', justifyContent: 'space-between', }} >
             <form onSubmit={handlesubmit} style={{ display: 'flex', flexDirection: 'column', height: '5rem', justifyContent: 'space-around', width: '12rem' }}>
               <label style={{ fontSize: '1rem', fontWeight: 550 }}>Name</label>
               <input type="text" id="name" name="name" value={input} placeholder='Name' onChange={(e) => { setinput(e.target.value); console.log(e.target.value); }} style={{ display: 'flex', flexDirection: 'column', height: '2rem', justifyContent: 'space-between', width: '25rem', border: '1px solid lightgrey', borderRadius: '5px', arginTop: '10px' }} />

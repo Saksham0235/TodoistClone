@@ -1,8 +1,6 @@
-
-import React, { useMemo, useState } from 'react';
-import { Button, ConfigProvider, Popover } from 'antd';
+import React, { useState } from 'react';
+import {  ConfigProvider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'
-const text = <span>Title</span>;
 import './form.css'
 
 
@@ -16,21 +14,12 @@ const SectionForm = ({ title, handleAdd }) => {
         setinput('')
         setShowForm(false);
     }
-
     const toggle = () => {
         setShowForm(!showForm)
     }
 
     return (
- 
-        <ConfigProvider
-            button={{
-                style: {
-                    width: 100,
-                    margin: 4,
-                },
-            }}
-        >
+        <ConfigProvider button={{style: {width: 100,margin: 4,  }, }} >
             <div style={{ clear: 'both', whiteSpace: 'nowrap' }}>
                 {showForm ? (
                     <form onSubmit={handleSubmit} style={{marginLeft:'28px',marginTop:'20px'}}>

@@ -10,28 +10,22 @@ import { Spin, Popover } from 'antd';
 import { useSnackbar } from 'notistack';
 import SectionForm from './SectionForm'
 
-
-
-
-
 function Sections({ projectId, tasks, }) {
 
     const { enqueueSnackbar } = useSnackbar();
     const [currentProjectId, setCurrentProjectId] = useState(projectId);
     const [selectedSectionId, setSelectedSectionId] = useState(null);
-    const [loading, setLoading] = useState(true);    
+    const [loading, setLoading] = useState(true);
     const [editSectionId, setEditSectionId] = useState(null)
     const [sectionName, setSectionName] = useState('')
 
+
     const handleSectionSelect = (sectionId) => {
-        // console.log(sectionId,"From selection id func");
         setSelectedSectionId(sectionId);
     };
 
     const dispatch = useDispatch()
     const data = useSelector((state) => state.Section.sections)
-    // console.log(data, "From sections");
-
     const fetchSections = async () => {
         try {
             const response = await getsections(projectId)
@@ -82,9 +76,6 @@ function Sections({ projectId, tasks, }) {
         }
 
     }
-
-
-
     return (
         <div>
             <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
@@ -92,11 +83,11 @@ function Sections({ projectId, tasks, }) {
             {data.map((item) => (
                 <div key={item.id} style={{ width: '40vw', height: 'auto', margin: '20px', border: '1px solid lightgrey', borderRadius: '10px', padding: '10px' }} onClick={() => { handleSectionSelect(item.id); console.log('Selectedsectionid', item.id); }}>
                     {editSectionId === item.id ? (
-                        <form onSubmit={(e)=>{e.preventDefault();handleUpdateSection(item.id)}} style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', height: 80 }}>
-                            <input value={sectionName} onChange={(e) => setSectionName(e.target.value)} style={{ height: 40,fontSize:'16px' }} />
+                        <form onSubmit={(e) => { e.preventDefault(); handleUpdateSection(item.id) }} style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', height: 80 }}>
+                            <input value={sectionName} onChange={(e) => setSectionName(e.target.value)} style={{ height: 40, fontSize: '16px' }} />
                             <div style={{ display: 'flex' }}>
-                                <Button style={{ backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px', fontWeight: 600 }} onClick={() => handleUpdateSection(item.id)}>Save</Button>
-                                <Button style={{border: 'none', borderRadius: '5px', fontWeight: 600 }}onClick={() => setEditSectionId(null)}>Cancel</Button>
+                                <Button style={{ backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px', fontWeight: 600 }} onClick={() => { handleUpdateSection(item.id); }}>Save</Button>
+                                <Button style={{ border: 'none', borderRadius: '5px', fontWeight: 600 }} onClick={() => { setEditSectionId(null); }}>Cancel</Button>
                             </div>
                         </form>
                     ) : (
@@ -104,14 +95,13 @@ function Sections({ projectId, tasks, }) {
                             <div className="div" style={{ display: "flex", flexDirection: 'column' }}>
                                 <span>{item.name}</span>
                             </div>
-                            <Popover
+                            <Popover trigger="click"
                                 content={
-                                    <div style={{ display: 'flex', height: 100, width: 100, justifyContent: 'space-around', flexDirection: 'column' }}>
+                                    <div div style={{ display: 'flex', height: 100, width: 100, justifyContent: 'space-around', flexDirection: 'column' }}>
                                         <Button danger onClick={() => { deleteSectionId(item.id) }}>Delete</Button>
                                         <Button onClick={() => handleEditClick(item.id, item.name)}>Edit</Button>
                                     </div>
                                 }
-                                trigger="click"
                             >
                                 <Button className='listbtn' >{'...'}</Button>
                             </Popover>
@@ -121,10 +111,7 @@ function Sections({ projectId, tasks, }) {
                 </div>
             ))
             }
-            <SectionForm title={'Add Section'} handleAdd={AddSection}  />
-
-
-
+            <SectionForm title={'Add Section'} handleAdd={AddSection} />
         </div >
     )
 }

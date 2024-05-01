@@ -148,7 +148,7 @@ function Tasks() {
     const tasklist = activeTasks.filter(task => (task?.projectId === projectId) && (task?.sectionId === null))
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', marginTop: '-40px', marginLeft: '3rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', marginTop: '-40px' }}>
             {
                 projectId ? <Title level={2} style={{ marginLeft: "25px" }}> {projectName}</Title> : <Title level={3} style={{ marginLeft: "25px" }}>{formatteddate} Today</Title>
             }

@@ -29,10 +29,7 @@ function Labels() {
             enqueueSnackbar("Error in Fetching Labels", { variant: 'error' })
         }
     }
-
-
-
-    const HandleDelete = async (id) => {
+    const handleDelete = async (id) => {
         console.log(id, "Delete")
         try {
             const response = await deleteLabel(id)
@@ -42,8 +39,7 @@ function Labels() {
             console.log("Error in deleting label: ", err);
         }
     }
-
-    const AddLabel = async (name) => {
+    const addLabel = async (name) => {
         try {
             const response = await createLabel(name)
             dispatch(addLabelSuccess(response))
@@ -57,33 +53,30 @@ function Labels() {
         console.log(isFormOpen, "State of Form");
         setisFormOpen(() => !isFormOpen)
     }
-
     useEffect(() => {
         fetchLabels()
     }, [])
     return (
         <div>
-            <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',width: 780 }}>Labels <Form title='' toggle={toggle} handleAdd={AddLabel} isFormOpen={isFormOpen} /></h1>
+            <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: 780 }}>Labels <Form title='Add' toggle={toggle} handleAdd={addLabel} isFormOpen={isFormOpen} /></h1>
             <center><Spin spinning={loading} indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /></center>
             {data.map((label) => {
                 return (
                     <ul key={label.id} style={{ listStyle: 'none' }}>
-                        <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 770,marginLeft:'-30px' }}>
+                        <li style={{ fontSize: '1.2rem', display: 'flex', justifyContent: 'space-between', width: 770, marginLeft: '-30px' }}>
                             <div key={label.id} className="div" style={{ display: "flex", flexDirection: 'column', cursor: 'pointer' }}>
 
                                 <Link to={`/app/label/${label.name}-${label.id}`} style={{ textDecoration: 'none' }}>
                                     <span>
-                                         <span><TagOutlined style={{ marginRight: 10,color:'gray' }} /></span>
-                                      <span style={{color:'black'}}>{label.name}</span>  
+                                        <span><TagOutlined style={{ marginRight: 10, color: 'gray' }} /></span>
+                                        <span style={{ color: 'black' }}>{label.name}</span>
                                     </span>
                                 </Link>
                             </div>
                             <div className="buttons" style={{ width: 100, display: 'flex', justifyContent: 'space-between' }}>
-                                <Button danger onClick={() => HandleDelete(label.id)}>Delete</Button>
+                                <Button danger onClick={() => handleDelete(label.id)}>Delete</Button>
                             </div>
-
                         </li>
-
                     </ul>
                 )
             })}

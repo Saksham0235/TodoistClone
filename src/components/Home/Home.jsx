@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Typography,  } from 'antd';
-const { Title } = Typography;
+import React, { useEffect } from 'react';
 import './home.css'
 import Tasks from '../Tasks/Tasks'
 import LabelDetail from '../Labels/LabelDetail';
-import { Routes,Route, BrowserRouter } from 'react-router-dom';
+import { Routes,Route } from 'react-router-dom';
 import Projects from '../Sidebar/Projects';
 import {getLabels} from '../../Api/Api'
 import Labels from '../Labels/Labels';
@@ -14,7 +12,6 @@ import { useDispatch } from 'react-redux';
 
 const Home = () => {
     const dispatch=useDispatch()
-    
     const fetchlabels = async () => {
         try {
             const response = await getLabels()
@@ -27,18 +24,13 @@ const Home = () => {
     useEffect(()=>{
         fetchlabels()
     },[])
-
-
     return (
 
-        <section className='main'>
+        <section className='main' style={{display:'flex',width:'99vw'}}>
             <div className="left">
-
             <Projects />
             </div>
             <div className="right">
-               
-               
                 <Routes>
                     <Route path='/' element={<Tasks/>} />
                     <Route path='/app/label' element={<Labels />} />
@@ -46,8 +38,6 @@ const Home = () => {
                     <Route path='/projects/:projectId' element={<Tasks />} />
                 </Routes>
             </div>
-
-
         </section>
     );
 };

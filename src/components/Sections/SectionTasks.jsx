@@ -39,8 +39,6 @@ function SectionTasks({ sectionid, projectId, tasks, Addtask, selectedSectionId 
             console.log('Error in checkboxTask', error);
         }
     }
-
-
     return (
         <div>
             {
@@ -74,10 +72,8 @@ function SectionTasks({ sectionid, projectId, tasks, Addtask, selectedSectionId 
                                         >
                                             <Button className='listbtn' >{'...'}</Button>
                                         </Popover>
-
                                     </div>
                                 </li>
-
                             </ul>
                         )
                     })

@@ -13,11 +13,9 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
   const [description, setDescription] = useState('')
   const Labeldata = useSelector((state) => state.Label.Labels)
   const projectnames = useSelector(state => state.projects.Projects)
-  const projidinbox='2331888192'
+  const projidinbox = '2331888192'
   const [selectedProjectId, setselectedProjectId] = useState(projidinbox)
   const [selectedLabel, setSelectedLabel] = useState([])
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -31,17 +29,14 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
       }
       handleAdd(input, selecteddate, selectedstring, description, selectedProjectId, selectedLabel);
     }
-
     setinput('')
     setselecteddate(null)
     setDescription('')
     toggleform()
   }
   const onChange = (date, dateString) => {
-
     const str = String(date?.$d)
     const string = str.slice(4, 10)
-
     setselecteddate(dateString, string)
     setselectedstring(string)
     console.log(date, "Date");
@@ -54,7 +49,7 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
       if (editmode.due.date) {
         setselecteddate(editmode.due.date)
       }
-      if (editmode.projectId) { 
+      if (editmode.projectId) {
         console.log(editmode.projectId, "From edit projectid");
         setselectedProjectId(editmode.projectId)
       }
@@ -71,9 +66,6 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
       setselectedstring('');
     }
   }, [editmode]);
-
-  // console.log('form fjlsdjf')
-
   return (
     <ConfigProvider
       button={{
@@ -93,7 +85,7 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
 
           <div className="options" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
 
-            <select style={{ width: 100, height: 30, cursor: 'pointer', border: 'none' }} onChange={(e) => { setselectedProjectId(e.target.value); console.log(e.target.value, "From selecting projectname"); }}>
+            <select style={{ width: 110, height: 30, cursor: 'pointer', border: 'none' }} onChange={(e) => { setselectedProjectId(e.target.value); console.log(e.target.value, "From selecting projectname"); }}>
               <option value={null}>Select Project</option>
               {projectnames.map((project) => (
                 <option value={project.id} >{project.name}</option>
@@ -108,7 +100,6 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
                   setSelectedLabel([selectedOption]);
                 }
                 }>
-                {/* <option value={null}>Select Label</option> */}
                 {Labeldata.map((data) => (
                   <option value={data.name}>{data.name}</option>
                 ))
@@ -128,11 +119,7 @@ const Form = ({ title, handleAdd, editmode, isformopen, toggleform, handleupdate
         }}
       >
         <button className='Addformbutton' onClick={() => toggleform()} style={{ marginLeft: "30px", display: 'flex', border: 'none' }}><PlusOutlined style={{ marginRight: 5 }} />{title}</button>
-
       </div>)}
-
-
-
     </ConfigProvider >
   );
 };
