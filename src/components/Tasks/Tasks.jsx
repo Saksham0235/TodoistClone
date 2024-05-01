@@ -87,6 +87,7 @@ function Tasks() {
     const updateTaskFunc = async (content, due_date, due_string, description, projectId, labels) => {
         console.log(projectId, 'From update function');
         try {
+            await moveTask(editdata.id, projectId);
             const response = await updateTaskapi(editdata.id,
                 {
                     content: content,
@@ -96,7 +97,7 @@ function Tasks() {
                     projectId: projectId,
                     labels: labels
                 })
-            await moveTask(editdata.id, projectId);
+
             console.log(response, "After sending data to api");
             dispatch(Update(response))
             fetchtask()
