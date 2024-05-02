@@ -9,11 +9,11 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
         <Provider store={store} >
+      <BrowserRouter>
           <Home />
-        </Provider>
       </BrowserRouter>
+        </Provider>
     </>
   )
 }

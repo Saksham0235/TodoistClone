@@ -10,24 +10,27 @@ const SectionSlice=createSlice({
     name:'sections',
     initialState,
     reducers:{
-        Fetch_Section_Success:(state,action)=>{
+        fetchSection:(state,action)=>{
             state.sections=action.payload
         },
-        Add_Section_Success:(state,action)=>{
+        addSection:(state,action)=>{
             return{
                 ...state,
                 sections:[...state.sections,action.payload]
             }
         },
-        Delete_Section_Success:(state,action)=>{
+        deleteSectionAction:(state,action)=>{
             return {
                 ...state,
                 sections:state.sections.filter((section)=>section.id!==action.payload)
             }
+        },
+        updateSection:(state,action)=>{
+            state.sections=state.sections.map((section)=>(section.id===action.payload.id?action.payload:section))
         }
     }
 })
 
-export const {Fetch_Section_Success,Add_Section_Success,Delete_Section_Success}=SectionSlice.actions
+export const {fetchSection,addSection,deleteSectionAction,updateSection}=SectionSlice.actions
 
 export default SectionSlice.reducer

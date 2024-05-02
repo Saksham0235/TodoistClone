@@ -1,0 +1,59 @@
+.selected-menu-item:hover {
+  background-color: transparent !important;
+}
+.homebtn {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  width: 18vw;
+  display: flex;
+  height: 2.5rem;
+  border-radius: 10px;
+  padding-top: 10px;
+}
+.homebtn:hover {
+  background-color: rgb(239, 238, 238);
+}
+
+.homebtn:active {
+  background-color: rgba(251, 198, 198, 0.338);
+}
+.labelbtn {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  width: 18vw;
+  display: flex;
+  height: 2.5rem;
+  border-radius: 10px;
+  padding-top: 10px;
+}
+.labelbtn:hover {
+  background-color: rgb(239, 238, 238);
+}
+
+.labelbtn:active {
+  background-color: rgba(251, 198, 198, 0.338);
+}
+.projectbtn {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  width: 13.8vw;
+  display: flex;
+  height: 2.5rem;
+  border-radius: 10px;
+  padding-top: 10px;
+}
+.projectbtn:hover {
+  background-color: rgb(239, 238, 238);
+}
+
+.projectbtn:active {
+  background-color: rgba(198, 216, 251, 0.338);
+}
